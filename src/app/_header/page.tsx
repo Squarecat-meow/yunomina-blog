@@ -2,7 +2,7 @@
 
 import { Login, Menu } from "@carbon/icons-react";
 import HeaderButton from "./components/headerButton";
-import PostsList from "../posts/_sidebar/postsList";
+import PostsList from "../(pages)/posts/_sidebar/postsList";
 import Link from "next/link";
 import { useEffect } from "react";
 
