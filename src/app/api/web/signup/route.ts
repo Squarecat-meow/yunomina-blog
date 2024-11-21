@@ -16,22 +16,34 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  await prisma.user.create({
-    data: {
-      userId: body.userId,
-      password: body.password,
-    },
-  });
-
-  const jwtToken = await generateJWT(body);
-
-  return NextResponse.json(
-    { userId: body.userId },
-    {
-      status: 200,
-      headers: {
-        "Set-Cookie": `jwtToken=${jwtToken}; sameSite=strict; httpOnly=true; maxAge=60*60*6`,
+  try {
+    await prisma.user.create({
+      data: {
+        userId: body.userId,
+        password: body.password,
+        profile: {
+          create: {
+            avatarUrl: null,
+          },
+        },
       },
-    }
-  );
+    });
+
+    const jwtToken = await generateJWT(body);
+
+    return NextResponse.json(
+      { userId: body.userId, avatarUrl: null },
+      {
+        status: 200,
+        headers: {
+          "Set-Cookie": `jwtToken=${jwtToken}; sameSite=strict; httpOnly=true; maxAge=60*60*6`,
+        },
+      }
+    );
+  } catch (err) {
+    return NextResponse.json(
+      { message: "회원가입중 에러: " + err },
+      { status: 500 }
+    );
+  }
 }

@@ -9,7 +9,8 @@ import { useRouter } from "next/navigation";
 
 export default function Signup() {
   const [loading, setLoading] = useState(false);
-  const modalRef = useRef<HTMLDialogElement>(null);
+  const successModalRef = useRef<HTMLDialogElement>(null);
+  const failedModalRef = useRef<HTMLDialogElement>(null);
   const router = useRouter();
 
   const {
@@ -30,13 +31,19 @@ export default function Signup() {
       try {
         setLoading(true);
         const hashedPayload = await postSignup(data);
-        await fetch("/api/web/signup", {
+        const res = await fetch("/api/web/signup", {
           method: "POST",
           body: JSON.stringify(hashedPayload),
-        }).then(() => {
-          setLoading(false);
-          modalRef.current?.showModal();
         });
+        if (!res.ok) {
+          setLoading(false);
+          failedModalRef.current?.showModal();
+        } else {
+          const profile = await res.json();
+          setLoading(false);
+          localStorage.setItem("profile", JSON.stringify(profile));
+          successModalRef.current?.showModal();
+        }
       } catch (err) {
         console.log(err);
       }
@@ -101,7 +108,7 @@ export default function Signup() {
           )}
         </button>
       </form>
-      <dialog id="signup_success" ref={modalRef} className="modal">
+      <dialog id="signup_success" ref={successModalRef} className="modal">
         <div className="modal-box">
           <h3 className="font-bold text-lg">안녕!</h3>
           <p className="py-4">놋치미나의 아늑한 집에 잘 왔어!</p>
@@ -110,6 +117,17 @@ export default function Signup() {
               <button className="btn" onClick={() => router.replace("/")}>
                 시작해볼까?
               </button>
+            </form>
+          </div>
+        </div>
+      </dialog>
+      <dialog id="signup_failed" ref={failedModalRef} className="modal">
+        <div className="modal-box">
+          <h3 className="font-bold text-lg">아이고!</h3>
+          <p className="py-4">회원가입에 실패했어!</p>
+          <div className="modal-action">
+            <form method="dialog">
+              <button className="btn">다시해볼까?</button>
             </form>
           </div>
         </div>

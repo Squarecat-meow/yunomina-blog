@@ -6,10 +6,10 @@ import bcrypt from "bcrypt";
 async function hashPassword(password: string): Promise<string> {
   const saltRound = 15;
 
-  return new Promise<string>((res) => {
+  return new Promise<string>((res, rej) => {
     bcrypt.hash(password, saltRound, async (err, hash) => {
       if (err) {
-        console.error("패스워드 해싱 중 에러: " + err);
+        rej(err);
       }
       res(hash);
     });
