@@ -52,7 +52,10 @@ export default function Signup() {
 
   return (
     <div className="w-full desktop:w-[90%] flex flex-col items-center p-6">
-      <form className="flex flex-col gap-4" onSubmit={handleSubmit(onValid)}>
+      <form
+        className="flex flex-col gap-4 w-full desktop:w-[24rem]"
+        onSubmit={handleSubmit(onValid)}
+      >
         <span>회원가입</span>
         <label className="input flex items-center gap-2">
           <div className="border-b border-b-black flex flex-col items-center">
@@ -67,7 +70,9 @@ export default function Signup() {
               <input
                 {...register("invitationCode", { required: true })}
                 type="text"
-                className={`input ${errors.invitationCode && "input-error"}`}
+                className={`input w-full ${
+                  errors.invitationCode && "input-error"
+                }`}
                 placeholder="초대코드"
               />
             </div>
@@ -79,7 +84,7 @@ export default function Signup() {
             <input
               {...register("userId", { required: true })}
               type="text"
-              className={`input ${errors.userId && "input-error"}`}
+              className={`input w-full ${errors.userId && "input-error"}`}
               placeholder="아이디"
             />
           </div>
@@ -90,7 +95,7 @@ export default function Signup() {
             <input
               {...register("password", { required: true })}
               type="password"
-              className={`input ${errors.password && "input-error"}`}
+              className={`input w-full ${errors.password && "input-error"}`}
               placeholder="비밀번호"
             />
           </div>

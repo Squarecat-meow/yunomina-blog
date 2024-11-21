@@ -4,9 +4,15 @@ import { Login, Menu } from "@carbon/icons-react";
 import HeaderButton from "./components/headerButton";
 import PostsList from "../(pages)/posts/_sidebar/postsList";
 import Link from "next/link";
-import { useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
+import { profileDto } from "../_dto/profile.dto";
+import LoggedinIcons from "./components/loggedInIcons";
+import { handleLogout } from "./action";
 
 export default function Header() {
+  const [profile, setProfile] = useState<profileDto | null>(null);
+  const logoutModalRef = useRef<HTMLDialogElement>(null);
+
   useEffect(() => {
     const menuItem = document.querySelectorAll(".menu_item");
     const drawer = document.getElementById("menu_drawer") as HTMLInputElement;
@@ -16,6 +22,13 @@ export default function Header() {
         drawer.checked = false;
       });
     });
+
+    const storageProfile = localStorage.getItem("profile");
+    if (storageProfile) {
+      setProfile(JSON.parse(storageProfile));
+    } else {
+      setProfile(null);
+    }
 
     return () => {
       menuItem.forEach((item) => {
@@ -68,10 +81,51 @@ export default function Header() {
         </div>
       </div>
       <div className="flex gap-6">
-        <Link href={"/login"}>
-          <Login size={24} />
-        </Link>
+        {profile ? (
+          <>
+            {profile.userId !== "" ? (
+              <>
+                <LoggedinIcons
+                  avatarUrl={profile.avatarUrl}
+                  userId={profile.userId}
+                  logoutModalRef={logoutModalRef.current}
+                />
+              </>
+            ) : (
+              <div>
+                <span className="loading loading-spinner loading-sm" />
+              </div>
+            )}
+          </>
+        ) : (
+          <>
+            <Link href={"/login"}>
+              <Login size={24} />
+            </Link>
+          </>
+        )}
       </div>
+      <dialog id="logout" ref={logoutModalRef} className="modal">
+        <div className="modal-box">
+          <h3 className="font-bold text-lg">로그아웃</h3>
+          <p className="py-4">로그아웃하고 나중에 다시 볼까?</p>
+          <div className="modal-action">
+            <form method="dialog" className="flex gap-2">
+              <button
+                className="btn btn-primary"
+                onClick={() => {
+                  handleLogout();
+                  localStorage.clear();
+                  location.reload();
+                }}
+              >
+                응!
+              </button>
+              <button className="btn">아니?</button>
+            </form>
+          </div>
+        </div>
+      </dialog>
     </div>
   );
 }
