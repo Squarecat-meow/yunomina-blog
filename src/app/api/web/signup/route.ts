@@ -23,7 +23,7 @@ export async function POST(req: NextRequest) {
     },
   });
 
-  const jwtToken = await generateJWT(body.userId);
+  const jwtToken = await generateJWT(body);
 
   return NextResponse.json(
     { userId: body.userId },
