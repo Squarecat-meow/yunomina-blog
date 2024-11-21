@@ -1,6 +1,6 @@
 "use server";
 
-import { signupDto } from "@/app/_dto/signup.dto";
+import { signDto } from "@/app/_dto/sign.dto";
 import bcrypt from "bcrypt";
 
 async function hashPassword(password: string): Promise<string> {
@@ -20,9 +20,9 @@ export async function postSignup({
   invitationCode,
   userId,
   password,
-}: signupDto) {
+}: signDto) {
   const hashedPasswd = await hashPassword(password);
-  const payloadWithHashedPassword: signupDto = {
+  const payloadWithHashedPassword: signDto = {
     userId: userId,
     password: hashedPasswd,
     invitationCode: invitationCode,

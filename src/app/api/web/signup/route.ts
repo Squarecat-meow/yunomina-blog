@@ -1,7 +1,6 @@
-import { signupDto } from "@/app/_dto/signup.dto";
 import { PrismaClient } from "@prisma/client";
-import { SignJWT } from "jose";
 import { NextRequest, NextResponse } from "next/server";
+import { generateJWT } from "../../functions/generateJwt";
 
 export async function POST(req: NextRequest) {
   const body = await req.json();
@@ -24,7 +23,7 @@ export async function POST(req: NextRequest) {
     },
   });
 
-  const jwtToken = await generateJWT(body);
+  const jwtToken = await generateJWT(body.userId);
 
   return NextResponse.json(
     { userId: body.userId },
@@ -35,19 +34,4 @@ export async function POST(req: NextRequest) {
       },
     }
   );
-}
-
-async function generateJWT(payload: signupDto) {
-  const alg = "HS256";
-  const secret = new TextEncoder().encode(process.env.JWT_SECRET);
-
-  const webUrl = process.env.WEB_URL;
-  const jwtToken = await new SignJWT({ userId: payload.userId })
-    .setProtectedHeader({ alg })
-    .setIssuedAt()
-    .setIssuer(`${webUrl}`)
-    .setExpirationTime("6h")
-    .sign(secret);
-
-  return jwtToken;
 }

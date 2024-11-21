@@ -3,7 +3,7 @@
 import { Code, Password, User } from "@carbon/icons-react";
 import { useForm } from "react-hook-form";
 import { postSignup } from "./action";
-import { signupDto } from "@/app/_dto/signup.dto";
+import { signDto } from "@/app/_dto/sign.dto";
 import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 
@@ -17,9 +17,9 @@ export default function Signup() {
     handleSubmit,
     setError,
     formState: { errors },
-  } = useForm<signupDto>({ mode: "onBlur" });
+  } = useForm<signDto>({ mode: "onBlur" });
 
-  const onValid = async (data: signupDto) => {
+  const onValid = async (data: signDto) => {
     if (data.invitationCode !== process.env.NEXT_PUBLIC_INVITATION_CODE) {
       setError(
         "invitationCode",
