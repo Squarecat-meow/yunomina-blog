@@ -16,10 +16,14 @@ async function hashPassword(password: string): Promise<string> {
   });
 }
 
-export async function postSignup({ invitationCode, id, password }: signupDto) {
+export async function postSignup({
+  invitationCode,
+  userId,
+  password,
+}: signupDto) {
   const hashedPasswd = await hashPassword(password);
   const payloadWithHashedPassword: signupDto = {
-    id: id,
+    userId: userId,
     password: hashedPasswd,
     invitationCode: invitationCode,
   };
