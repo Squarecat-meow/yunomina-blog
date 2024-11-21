@@ -1,6 +1,6 @@
 "use client";
 
-import { Login, Menu, Search } from "@carbon/icons-react";
+import { Login, Menu } from "@carbon/icons-react";
 import HeaderButton from "./components/headerButton";
 import PostsList from "../posts/_sidebar/postsList";
 import Link from "next/link";
@@ -40,7 +40,7 @@ export default function Header() {
             htmlFor="menu_drawer"
             aria-label="close sidebar"
             className="drawer-overlay"
-          ></label>
+          />
           <ul className="menu bg-base-100 text-base-content min-h-full w-56 p-4">
             <li className="menu_item">
               <Link href={"/"}>Home</Link>
@@ -71,7 +71,6 @@ export default function Header() {
         <Link href={"/login"}>
           <Login size={24} />
         </Link>
-        <Search size={24} />
       </div>
     </div>
   );
