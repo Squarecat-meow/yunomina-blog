@@ -3,7 +3,6 @@ CREATE TABLE "user" (
     "id" SERIAL NOT NULL,
     "userId" TEXT NOT NULL,
     "password" TEXT NOT NULL,
-    "salt" TEXT NOT NULL,
 
     CONSTRAINT "user_pkey" PRIMARY KEY ("id")
 );

@@ -17,5 +17,4 @@ model user {
   id        Int     @id @default(autoincrement())
   userId    String  @unique
   password  String
-  salt      String  @default(cuid())
 }
