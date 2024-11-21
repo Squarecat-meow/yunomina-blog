@@ -17,4 +17,12 @@ model user {
   id        Int     @id @default(autoincrement())
   userId    String  @unique
   password  String
+  profile   profile?
+}
+
+model profile {
+  id           Int     @id @default(autoincrement())
+  userId       String  @unique
+  avatarUrl    String?
+  user         user    @relation(fields: [userId], references: [userId])
 }
