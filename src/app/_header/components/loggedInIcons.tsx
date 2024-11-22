@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 type loggedInProps = {
   avatarUrl: string | null;
   userId: string;
@@ -33,7 +35,9 @@ export default function LoggedinIcons({
             <span>글쓰기</span>
           </li>
           <li>
-            <span>설정</span>
+            <Link href={"/setting"}>
+              <span>설정</span>
+            </Link>
           </li>
           <li className="border-b border-black"></li>
           <li onClick={() => logoutModalRef?.showModal()}>
