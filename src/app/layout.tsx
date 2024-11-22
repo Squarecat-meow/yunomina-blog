@@ -15,7 +15,7 @@ const IBMMono = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "YunoMina Blog",
+  title: "놋치미나의 아늑한 집",
   description: "놋치미나의 공동블로그",
 };
 
