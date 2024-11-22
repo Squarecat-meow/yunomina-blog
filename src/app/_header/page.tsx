@@ -119,9 +119,9 @@ export default function Header() {
                   location.reload();
                 }}
               >
-                응!
+                나중에 봐~
               </button>
-              <button className="btn">아니?</button>
+              <button className="btn">잠깐만!</button>
             </form>
           </div>
         </div>
