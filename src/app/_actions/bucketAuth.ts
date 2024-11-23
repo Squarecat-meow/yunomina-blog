@@ -33,8 +33,8 @@ export async function bucketAuth() {
       const uploadInfo = await uploadRes.json();
 
       return {
-        uploadUrl: uploadInfo.uploadUrl,
-        accessToken: authorizationToken,
+        uploadUrl: uploadInfo.uploadUrl as string,
+        accessToken: authorizationToken as string,
       };
     } catch (err) {
       throw new Error("업로드 URL Fetch 중 오류 발생");
