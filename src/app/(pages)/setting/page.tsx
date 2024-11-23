@@ -2,11 +2,13 @@
 
 import { Camera } from "@carbon/icons-react";
 import Image from "next/image";
-import { ChangeEvent, useEffect, useRef, useState } from "react";
+import { ChangeEvent, useRef, useState } from "react";
+import AvatarCrop from "./_Avatar/page";
 
 export default function Setting() {
   const [avatar, setAvatar] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const avatarCropModal = useRef<HTMLDialogElement>(null);
 
   const handleInputClick = () => {
     if (!fileInputRef.current) return;
@@ -18,6 +20,9 @@ export default function Setting() {
     const file = e.target.files[0];
     const fileInternalUrl = URL.createObjectURL(file);
     setAvatar(fileInternalUrl);
+
+    if (!avatarCropModal.current) return;
+    avatarCropModal.current.showModal();
   };
 
   return (
@@ -60,6 +65,17 @@ export default function Setting() {
           />
         </div>
       </div>
+      <dialog ref={avatarCropModal} className="modal ">
+        <div className="modal-box w-full desktop:w-[52rem]">
+          {avatar && (
+            <AvatarCrop
+              avatar={avatar}
+              setter={setAvatar}
+              ref={avatarCropModal}
+            />
+          )}
+        </div>
+      </dialog>
     </div>
   );
 }
