@@ -12,6 +12,8 @@
     "@carbon/icons-react": "^11.52.0",
     "@prisma/client": "^5.22.0",
     "bcrypt": "^5.1.1",
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.14.1",
     "jose": "^5.9.6",
     "next": "^15.0.3",
     "react": "^18.3.1",
