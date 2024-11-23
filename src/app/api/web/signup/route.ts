@@ -1,10 +1,12 @@
 import { PrismaClient } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 import { generateJWT } from "../../functions/generateJwt";
+import { cookies } from "next/headers";
 
 export async function POST(req: NextRequest) {
   const body = await req.json();
   const prisma = new PrismaClient();
+  const cookieStore = await cookies();
 
   if (
     body.invitationCode !== process.env.NEXT_PUBLIC_INVITATION_CODE ||
@@ -31,14 +33,15 @@ export async function POST(req: NextRequest) {
 
     const jwtToken = await generateJWT(body);
 
+    cookieStore.set("jwtToken", jwtToken, {
+      httpOnly: true,
+      sameSite: "strict",
+      maxAge: 60 * 60 * 6,
+    });
+
     return NextResponse.json(
       { userId: body.userId, avatarUrl: null },
-      {
-        status: 200,
-        headers: {
-          "Set-Cookie": `jwtToken=${jwtToken}; sameSite=strict; httpOnly=true; maxAge=60*60*6`,
-        },
-      }
+      { status: 200 }
     );
   } catch (err) {
     return NextResponse.json(

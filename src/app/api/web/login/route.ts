@@ -2,6 +2,8 @@ import { PrismaClient } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 import bcrypt from "bcrypt";
 import { generateJWT } from "../../functions/generateJwt";
+import { bucketAuth } from "@/app/_actions/bucketAuth";
+import { cookies } from "next/headers";
 
 type payloadType = {
   password: string;
@@ -11,6 +13,7 @@ type payloadType = {
 export async function POST(req: NextRequest) {
   const body = await req.json();
   const prisma = new PrismaClient();
+  const cookieStore = await cookies();
 
   const payload: payloadType = {
     password: body.password,
@@ -37,14 +40,25 @@ export async function POST(req: NextRequest) {
 
       if (passwordMatch) {
         const jwtToken = await generateJWT(body);
+        const preDecodedBucketUrl = await bucketAuth();
+        const bucketUrl = decodeURIComponent(
+          JSON.stringify(preDecodedBucketUrl)
+        );
+
+        cookieStore.set("bucketUrl", bucketUrl, {
+          httpOnly: true,
+          sameSite: "strict",
+          maxAge: 60 * 60 * 6,
+        });
+        cookieStore.set("jwtToken", jwtToken, {
+          httpOnly: true,
+          sameSite: "strict",
+          maxAge: 60 * 60 * 6,
+        });
+
         return NextResponse.json(
           { passwordMatch: passwordMatch },
-          {
-            status: 200,
-            headers: {
-              "Set-Cookie": `jwtToken=${jwtToken}; sameSite=strict; httpOnly=true; maxAge=60*60*6`,
-            },
-          }
+          { status: 200 }
         );
       } else {
         return NextResponse.json(

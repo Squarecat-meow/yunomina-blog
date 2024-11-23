@@ -7,11 +7,17 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { profileDto } from "../_dto/profile.dto";
 import LoggedinIcons from "./components/loggedInIcons";
-import { handleLogout } from "./action";
+import { purgeCookies } from "./action";
 
 export default function Header() {
   const [profile, setProfile] = useState<profileDto | null>(null);
   const logoutModalRef = useRef<HTMLDialogElement>(null);
+
+  const handleLogout = async () => {
+    await purgeCookies();
+    localStorage.clear();
+    window.location.reload();
+  };
 
   useEffect(() => {
     const menuItem = document.querySelectorAll(".menu_item");
@@ -111,14 +117,7 @@ export default function Header() {
           <p className="py-4">로그아웃하고 나중에 다시 볼까?</p>
           <div className="modal-action">
             <form method="dialog" className="flex gap-2">
-              <button
-                className="btn btn-primary"
-                onClick={() => {
-                  handleLogout();
-                  localStorage.clear();
-                  location.reload();
-                }}
-              >
+              <button className="btn btn-primary" onClick={handleLogout}>
                 나중에 봐~
               </button>
               <button className="btn">잠깐만!</button>
