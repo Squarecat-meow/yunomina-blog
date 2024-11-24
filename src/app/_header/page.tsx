@@ -5,12 +5,12 @@ import HeaderButton from "./components/headerButton";
 import PostsList from "../(pages)/posts/_sidebar/postsList";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
-import { profileDto } from "../_dto/profile.dto";
+import { ProfileDto } from "../_dto/profile.dto";
 import LoggedinIcons from "./components/loggedInIcons";
 import { purgeCookies } from "./action";
 
 export default function Header() {
-  const [profile, setProfile] = useState<profileDto | null>(null);
+  const [profile, setProfile] = useState<ProfileDto | null>(null);
   const logoutModalRef = useRef<HTMLDialogElement>(null);
 
   const handleLogout = async () => {

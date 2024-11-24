@@ -1,11 +1,11 @@
 "use server";
 
-import { profileDto } from "@/app/_dto/profile.dto";
+import { ProfileDto } from "@/app/_dto/profile.dto";
 import { PrismaClient } from "@prisma/client";
 
 export async function fetchProfile(
   userId: string
-): Promise<profileDto | undefined> {
+): Promise<ProfileDto | undefined> {
   const prisma = new PrismaClient();
 
   try {
