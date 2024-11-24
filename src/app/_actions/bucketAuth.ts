@@ -34,7 +34,7 @@ export async function bucketAuth() {
 
       return {
         uploadUrl: uploadInfo.uploadUrl as string,
-        accessToken: authorizationToken as string,
+        accessToken: uploadInfo.authorizationToken as string,
       };
     } catch (err) {
       throw new Error("업로드 URL Fetch 중 오류 발생");
