@@ -23,6 +23,7 @@ model user {
 model profile {
   id           Int     @id @default(autoincrement())
   userId       String  @unique
+  nickname     String?
   avatarUrl    String?
   sentences    String?
   introduce    String?
