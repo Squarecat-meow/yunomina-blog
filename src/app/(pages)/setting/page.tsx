@@ -14,8 +14,10 @@ type FormValue = {
 
 export default function Setting() {
   const [avatar, setAvatar] = useState<string | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const avatarCropModal = useRef<HTMLDialogElement>(null);
+  const profileUpdateCompleteModalRef = useRef<HTMLDialogElement>(null);
 
   const {
     register,
@@ -46,6 +48,8 @@ export default function Setting() {
   };
 
   const onSubmit = async (data: FormValue) => {
+    setLoading(true);
+    profileUpdateCompleteModalRef.current?.showModal();
     const formData = new FormData();
     try {
       if (avatar) {
@@ -59,8 +63,11 @@ export default function Setting() {
         if (!res.ok) {
           throw new Error(`저장하는데 실패했어요! ${await res.text()}`);
         }
+        setLoading(false);
       }
     } catch (err) {
+      setLoading(false);
+      profileUpdateCompleteModalRef.current?.close();
       alert(err);
     }
   };
@@ -162,6 +169,24 @@ export default function Setting() {
               ref={avatarCropModal}
             />
           )}
+        </div>
+      </dialog>
+      <dialog ref={profileUpdateCompleteModalRef} className="modal">
+        <div className="modal-box">
+          <p className="py-4">
+            {loading ? "업데이트 하는 중..." : "프로필 업데이트 끝~!"}
+          </p>
+          <div className="modal-action">
+            <form method="dialog">
+              <button
+                className={`btn ${loading ? "btn-disabled" : "btn-outline"}`}
+              >
+                <span className={`${loading && "loading loading-spinner"}`}>
+                  {!loading && "닫기"}
+                </span>
+              </button>
+            </form>
+          </div>
         </div>
       </dialog>
     </div>
