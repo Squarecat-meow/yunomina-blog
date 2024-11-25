@@ -11,5 +11,7 @@ export async function checkAuth() {
       secret
     )) as JWTVerifyResult<{ userId: string }>;
     return payload.userId;
+  } else {
+    throw new Error("토큰이 없습니다!");
   }
 }
