@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.699.0",
     "@carbon/icons-react": "^11.52.0",
     "@prisma/client": "^5.22.0",
     "bcrypt": "^5.1.1",
