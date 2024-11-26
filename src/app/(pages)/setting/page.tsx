@@ -2,9 +2,10 @@
 
 import { Camera } from "@carbon/icons-react";
 import Image from "next/image";
-import { ChangeEvent, useRef, useState } from "react";
+import { ChangeEvent, useEffect, useRef, useState } from "react";
 import AvatarCrop from "./_Avatar/page";
 import { useForm } from "react-hook-form";
+import { ProfileDto } from "@/app/_dto/profile.dto";
 
 type FormValue = {
   nickname: string;
@@ -15,6 +16,7 @@ type FormValue = {
 export default function Setting() {
   const [avatar, setAvatar] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
+  const [profile, setProfile] = useState<ProfileDto | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const avatarCropModal = useRef<HTMLDialogElement>(null);
   const profileUpdateCompleteModalRef = useRef<HTMLDialogElement>(null);
@@ -45,32 +47,80 @@ export default function Setting() {
     profileUpdateCompleteModalRef.current?.showModal();
     const formData = new FormData();
     try {
-      if (avatar) {
-        const blob = await fetch(avatar).then((r) => r.blob());
-        formData.append("avatar", blob);
-        formData.append("settings", JSON.stringify(data));
-        const res = await fetch("/api/web/setting", {
-          method: "POST",
-          body: formData,
-        });
-        if (!res.ok) {
-          throw new Error(`저장하는데 실패했어요! ${await res.text()}`);
+      if (profile) {
+        if (avatar) {
+          // 아바타 사진을 블롭으로 바꿈
+          const blob = await fetch(avatar).then((r) => r.blob());
+          // 멀티파트 폼 데이터로 변환
+          formData.append("avatar", blob);
+          formData.append("userId", profile?.userId);
+          formData.append("settings", JSON.stringify(data));
+          const res = await fetch("/api/web/setting", {
+            method: "POST",
+            body: formData,
+          });
+          if (!res.ok) {
+            throw new Error(`저장하는데 실패했어요! ${await res.text()}`);
+          }
+
+          const result = await res.json();
+          const updatedProfile = {
+            userId: profile?.userId,
+            ...data,
+            ...result,
+          };
+          localStorage.setItem("profile", JSON.stringify(updatedProfile));
+          document.dispatchEvent(
+            new CustomEvent("avatar", {
+              detail: { avatarUrl: result.avatarUrl },
+              bubbles: true,
+            })
+          );
+          setLoading(false);
+        } else {
+          formData.append("avatar", "");
+          formData.append("settings", JSON.stringify(data));
+          const res = await fetch("/api/web/setting", {
+            method: "POST",
+            body: formData,
+          });
+          if (!res.ok) {
+            throw new Error(`저장하는데 실패했어요! ${await res.text()}`);
+          }
+          const updatedProfile = {
+            userId: profile?.userId,
+            avatarUrl: null,
+            ...data,
+          };
+
+          localStorage.setItem("profile", JSON.stringify(updatedProfile));
+          document.dispatchEvent(
+            new CustomEvent("avatar", {
+              detail: { avatarUrl: null },
+              bubbles: true,
+            })
+          );
+          setLoading(false);
         }
-        const result = await res.json();
-        setLoading(false);
-        document.dispatchEvent(
-          new CustomEvent("avatar", {
-            detail: { avatarUrl: result.avatarUrl },
-            bubbles: true,
-          })
-        );
+      } else {
+        throw new Error("LocalStorage에 프로필이 없어요!");
       }
+      // 아바타 사진이 들어있으면?
     } catch (err) {
       setLoading(false);
       profileUpdateCompleteModalRef.current?.close();
       alert(err);
     }
   };
+
+  useEffect(() => {
+    const localProfile = localStorage.getItem("profile");
+    if (localProfile) {
+      const profileData = JSON.parse(localProfile) as ProfileDto;
+      setProfile(profileData);
+      setAvatar(profileData.avatarUrl);
+    }
+  }, []);
 
   return (
     <div className="w-full desktop:w-[90%] p-6 flex justify-center">
