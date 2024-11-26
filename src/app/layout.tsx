@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 import Header from "./@header/page";
+import { Suspense } from "react";
+import Loading from "./loading";
 
 const noonnuuGotinc = localFont({
   src: "./fonts/NoonnuBasicGothicRegular.ttf",
@@ -29,8 +31,10 @@ export default function RootLayout({
       <body
         className={`${noonnuuGotinc.variable} ${IBMMono.variable} font-[family-name:var(--font-noonnuu-gothic)] antialiased flex flex-col items-center p-2 desktop:p-6`}
       >
-        <Header />
-        {children}
+        <Suspense fallback={<Loading />}>
+          <Header />
+          {children}
+        </Suspense>
       </body>
     </html>
   );
