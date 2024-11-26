@@ -7,8 +7,6 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import LoggedinIcons from "./components/loggedInIcons";
 import { purgeCookies } from "./action";
-import { getCookie } from "../_actions/getCookie";
-import { checkAuth } from "../../utils/jwt/checkAuth";
 import { useRouter } from "next/navigation";
 import { ProfileWithAvatarDto } from "../_dto/profile.dto";
 
@@ -33,26 +31,12 @@ export default function Header() {
 
     (async () => {
       try {
-        const jwtToken = await getCookie("jwtToken");
-        if (jwtToken) {
-          const id = await checkAuth(jwtToken.value);
-          if (!id) {
-            throw new Error("토큰 검증에 실패했어요!");
-          }
-          const localProfile = localStorage.getItem("profile");
-          if (localProfile) {
-            const parsedLocalProfile = JSON.parse(localProfile);
-            setProfile(parsedLocalProfile);
-            if (id !== parsedLocalProfile?.userId) {
-              throw new Error(
-                "쿠키가 변조되었거나 localStorage가 변조되었어요!"
-              );
-            }
-          } else {
-            setProfile(null);
-            throw new Error("LocalStorage에 프로필이 없어요!");
-          }
+        const localProfile = localStorage.getItem("profile");
+        if (!localProfile) {
+          throw new Error("localStorage에 프로필이 없어요!");
         }
+        const parsedLocalProfile = JSON.parse(localProfile);
+        setProfile(parsedLocalProfile);
       } catch (err) {
         alert(err);
         handleLogout();
