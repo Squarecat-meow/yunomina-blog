@@ -23,18 +23,18 @@ export default function Header() {
     const menuItem = document.querySelectorAll(".menu_item");
     const drawer = document.getElementById("menu_drawer") as HTMLInputElement;
 
-    menuItem.forEach((item) => {
-      item.addEventListener("click", () => {
-        drawer.checked = false;
-      });
-    });
-
     const storageProfile = localStorage.getItem("profile");
     if (storageProfile) {
       setProfile(JSON.parse(storageProfile));
     } else {
       setProfile(null);
     }
+
+    menuItem.forEach((item) => {
+      item.addEventListener("click", () => {
+        drawer.checked = false;
+      });
+    });
 
     return () => {
       menuItem.forEach((item) => {

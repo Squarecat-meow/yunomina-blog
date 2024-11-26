@@ -19,14 +19,7 @@ export default function Setting() {
   const avatarCropModal = useRef<HTMLDialogElement>(null);
   const profileUpdateCompleteModalRef = useRef<HTMLDialogElement>(null);
 
-  const {
-    register,
-    handleSubmit,
-    setError,
-    setValue,
-    watch,
-    formState: { errors },
-  } = useForm<FormValue>({ mode: "onBlur" });
+  const { register, handleSubmit } = useForm<FormValue>({ mode: "onBlur" });
 
   const handleInputClick = () => {
     if (!fileInputRef.current) return;
@@ -63,7 +56,14 @@ export default function Setting() {
         if (!res.ok) {
           throw new Error(`저장하는데 실패했어요! ${await res.text()}`);
         }
+        const result = await res.json();
         setLoading(false);
+        document.dispatchEvent(
+          new CustomEvent("avatar", {
+            detail: { avatarUrl: result.avatarUrl },
+            bubbles: true,
+          })
+        );
       }
     } catch (err) {
       setLoading(false);
@@ -86,7 +86,7 @@ export default function Setting() {
                     alt="Selected Avatar"
                     width={176}
                     height={176}
-                    style={{ objectFit: "contain" }}
+                    style={{ aspectRatio: 1, objectFit: "cover" }}
                     className="rounded-full"
                     onClick={handleInputClick}
                   />
@@ -143,8 +143,8 @@ export default function Setting() {
               </label>
             </div>
             <div>
-              <label className="flex flex-col">
-                <span className="ml-4 mb-2">자기소개</span>
+              <label className="flex flex-col mt-2">
+                <span className="ml-4 mb-4">자기소개</span>
                 <textarea
                   {...register("introduce")}
                   className="textarea textarea-bordered border-black h-36"
@@ -152,7 +152,7 @@ export default function Setting() {
                 />
               </label>
             </div>
-            <div className="flex justify-end">
+            <div className="flex justify-end mt-2">
               <button type="submit" className="btn btn-outline btn-lg">
                 저장
               </button>
@@ -160,7 +160,7 @@ export default function Setting() {
           </form>
         </div>
       </div>
-      <dialog ref={avatarCropModal} className="modal ">
+      <dialog ref={avatarCropModal} className="modal">
         <div className="modal-box w-full desktop:w-[52rem]">
           {avatar && (
             <AvatarCrop

@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 
 type loggedInProps = {
@@ -5,6 +6,12 @@ type loggedInProps = {
   userId: string;
   logoutModalRef: HTMLDialogElement | null;
 };
+
+declare global {
+  interface DocumentEventMap {
+    avatar: CustomEvent;
+  }
+}
 
 export default function LoggedinIcons({
   avatarUrl,
@@ -16,8 +23,14 @@ export default function LoggedinIcons({
       <div className="dropdown dropdown-bottom dropdown-end">
         {avatarUrl !== "" && avatarUrl !== null ? (
           <div tabIndex={0} className="avatar">
-            <div className="w-10 desktop:w-12 rounded">
-              <img src={avatarUrl} alt="profile avatar" />
+            <div className="w-10 desktop:w-12">
+              <Image
+                sizes="48px"
+                fill
+                src={avatarUrl}
+                alt="profile avatar"
+                className="rounded-full"
+              />
             </div>
           </div>
         ) : (
