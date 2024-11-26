@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
-import Header from "./_header/page";
+import Header from "./@header/page";
 
 const noonnuuGotinc = localFont({
   src: "./fonts/NoonnuBasicGothicRegular.ttf",

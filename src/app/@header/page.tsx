@@ -8,27 +8,54 @@ import { useEffect, useRef, useState } from "react";
 import { ProfileDto } from "../_dto/profile.dto";
 import LoggedinIcons from "./components/loggedInIcons";
 import { purgeCookies } from "./action";
+import { getCookie } from "../_actions/getCookie";
+import { checkAuth } from "../../utils/jwt/checkAuth";
+import { useRouter } from "next/navigation";
 
 export default function Header() {
   const [profile, setProfile] = useState<ProfileDto | null>(null);
+  const [userId, setUserId] = useState<string | null>(null);
   const logoutModalRef = useRef<HTMLDialogElement>(null);
+
+  const router = useRouter();
 
   const handleLogout = async () => {
     await purgeCookies();
     localStorage.clear();
-    window.location.reload();
+    router.replace("/");
   };
 
   useEffect(() => {
     const menuItem = document.querySelectorAll(".menu_item");
     const drawer = document.getElementById("menu_drawer") as HTMLInputElement;
 
-    const storageProfile = localStorage.getItem("profile");
-    if (storageProfile) {
-      setProfile(JSON.parse(storageProfile));
-    } else {
-      setProfile(null);
-    }
+    (async () => {
+      try {
+        const jwtToken = await getCookie("jwtToken");
+        if (jwtToken) {
+          const id = await checkAuth(jwtToken.value);
+          if (!id) {
+            throw new Error("토큰 검증에 실패했어요!");
+          }
+          const localProfile = localStorage.getItem("profile");
+          if (localProfile) {
+            const parsedLocalProfile = JSON.parse(localProfile);
+            setProfile(parsedLocalProfile);
+            if (id !== parsedLocalProfile?.userId) {
+              throw new Error(
+                "쿠키가 변조되었거나 localStorage가 변조되었어요!"
+              );
+            }
+          } else {
+            setProfile(null);
+            throw new Error("LocalStorage에 프로필이 없어요!");
+          }
+        }
+      } catch (err) {
+        alert(err);
+        handleLogout();
+      }
+    })();
 
     menuItem.forEach((item) => {
       item.addEventListener("click", () => {
@@ -36,11 +63,24 @@ export default function Header() {
       });
     });
 
+    document.addEventListener("avatar", () => {
+      const localProfile = localStorage.getItem("profile");
+      if (localProfile) {
+        setProfile(JSON.parse(localProfile));
+      }
+    });
+
     return () => {
       menuItem.forEach((item) => {
         item.removeEventListener("click", () => {
           drawer.checked = false;
         });
+      });
+      document.removeEventListener("avatar", () => {
+        const localProfile = localStorage.getItem("profile");
+        if (localProfile) {
+          setProfile(null);
+        }
       });
     };
   }, []);
