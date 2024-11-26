@@ -1,11 +1,12 @@
-import { FormDataDto } from "@/app/_dto/detailedProfile.dto";
+import { FormDataDto } from "@/app/_dto/profile.dto";
 import { checkAuth } from "@/utils/jwt/checkAuth";
 import { sendApiError } from "@/utils/apiHandler/sendApiError";
 import { sendApiOk } from "@/utils/apiHandler/sendApiOk";
 import { GetPrismaClient } from "@/utils/getPrismaClient/getPrismaClient";
-import { validateStrict } from "@/utils/validator/strictValidator";
 import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 import { NextRequest, NextResponse } from "next/server";
+
+const prisma = GetPrismaClient.getClient();
 
 const Bucket = process.env.BACKBLAZE_BUCKET;
 const s3 = new S3Client({
@@ -17,18 +18,15 @@ const s3 = new S3Client({
   },
 });
 
-function parseFormData(formData: FormData): Record<string, FormDataEntryValue> {
-  const data: Record<string, FormDataEntryValue> = {};
+function parseFormData(formData: FormData) {
+  const tempArray = [];
 
-  for (let [key, value] of formData.entries()) {
-    if (typeof value === "string" && value !== "") {
-      data[key] = JSON.parse(value);
-    } else {
-      data[key] = value;
-    }
+  for (const [key, value] of formData.entries()) {
+    tempArray.push([key, value]);
   }
+  const tempObject = Object.fromEntries(tempArray);
 
-  return data;
+  return tempObject;
 }
 
 async function fileToBuffer(file: File) {
@@ -39,22 +37,14 @@ async function fileToBuffer(file: File) {
 }
 
 export async function POST(req: NextRequest) {
-  const prisma = GetPrismaClient.getClient();
   const cookie = req.cookies.get("jwtToken");
 
   if (cookie) {
     try {
       const userId = await checkAuth(cookie.value);
       try {
-        const profileData = parseFormData(
-          await req.formData()
-        ) as unknown as FormDataDto;
-
-        const user = await prisma.user.findUniqueOrThrow({
-          where: {
-            userId: userId,
-          },
-        });
+        const data = await req.formData();
+        const profileData = parseFormData(data) as FormDataDto;
 
         //아바타 사진이 있으면?
         if (typeof profileData.avatar !== "string") {
@@ -69,6 +59,7 @@ export async function POST(req: NextRequest) {
               ContentType: "image/png",
             })
           );
+
           if (res.$metadata.httpStatusCode !== 200) {
             throw new Error(`버킷에 업로드를 실패했어요!`);
           }
@@ -81,9 +72,9 @@ export async function POST(req: NextRequest) {
             },
             data: {
               avatarUrl: avatarAddress,
-              introduce: profileData.settings.introduce,
-              sentences: profileData.settings.sentences,
-              nickname: profileData.settings.nickname,
+              introduce: profileData.introduce,
+              sentences: profileData.sentences,
+              nickname: profileData.nickname,
               user: {
                 connect: {
                   userId: userId,
@@ -91,6 +82,7 @@ export async function POST(req: NextRequest) {
               },
             },
           });
+
           return NextResponse.json({ avatarUrl: avatarAddress });
 
           // 아바타 사진이 없으면?
@@ -101,9 +93,9 @@ export async function POST(req: NextRequest) {
             },
             data: {
               avatarUrl: null,
-              introduce: profileData.settings.introduce,
-              sentences: profileData.settings.sentences,
-              nickname: profileData.settings.nickname,
+              introduce: profileData.introduce,
+              sentences: profileData.sentences,
+              nickname: profileData.nickname,
               user: {
                 connect: {
                   userId: userId,
@@ -122,5 +114,28 @@ export async function POST(req: NextRequest) {
     }
   } else {
     return sendApiError(401, "쿠키가 없습니다!");
+  }
+}
+
+export async function GET(req: NextRequest) {
+  try {
+    const token = req.cookies.get("jwtToken");
+    if (!token) {
+      throw new Error("토큰을 가져오는데 실패했어요!");
+    }
+    const userId = await checkAuth(token.value);
+    if (!userId) {
+      throw new Error("토큰을 검증하는데 실패했어요!");
+    }
+
+    const profile = await prisma.profile.findUniqueOrThrow({
+      where: {
+        userId: userId,
+      },
+    });
+
+    return NextResponse.json(profile);
+  } catch (err) {
+    return sendApiError(500, `GET해오는데 에러가 발생했어요! ${err}`);
   }
 }

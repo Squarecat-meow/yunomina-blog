@@ -5,16 +5,15 @@ import HeaderButton from "./components/headerButton";
 import PostsList from "../(pages)/posts/_sidebar/postsList";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
-import { ProfileDto } from "../_dto/profile.dto";
 import LoggedinIcons from "./components/loggedInIcons";
 import { purgeCookies } from "./action";
 import { getCookie } from "../_actions/getCookie";
 import { checkAuth } from "../../utils/jwt/checkAuth";
 import { useRouter } from "next/navigation";
+import { ProfileWithAvatarDto } from "../_dto/profile.dto";
 
 export default function Header() {
-  const [profile, setProfile] = useState<ProfileDto | null>(null);
-  const [userId, setUserId] = useState<string | null>(null);
+  const [profile, setProfile] = useState<ProfileWithAvatarDto | null>(null);
   const logoutModalRef = useRef<HTMLDialogElement>(null);
 
   const router = useRouter();
@@ -63,7 +62,7 @@ export default function Header() {
       });
     });
 
-    document.addEventListener("avatar", () => {
+    window.addEventListener("avatar", () => {
       const localProfile = localStorage.getItem("profile");
       if (localProfile) {
         setProfile(JSON.parse(localProfile));
@@ -133,6 +132,9 @@ export default function Header() {
               <>
                 <LoggedinIcons
                   avatarUrl={profile.avatarUrl}
+                  nickname={
+                    profile.nickname ? profile.nickname : profile.userId
+                  }
                   userId={profile.userId}
                   logoutModalRef={logoutModalRef.current}
                 />
@@ -144,11 +146,11 @@ export default function Header() {
             )}
           </>
         ) : (
-          <>
+          <button className="btn btn-circle btn-outline border-transparent">
             <Link href={"/login"}>
               <Login size={24} />
             </Link>
-          </>
+          </button>
         )}
       </div>
       <dialog id="logout" ref={logoutModalRef} className="modal">

@@ -1,13 +1,19 @@
-import { IsString, ValidateIf } from "class-validator";
-
-export class ProfileDto {
-  @IsString()
-  id: number;
-
-  @IsString()
+export interface FormDataDto {
+  avatar: File | string;
   userId: string;
+  nickname: string | null;
+  sentences: string | null;
+  introduce: string | null;
+}
 
-  @ValidateIf((o, v) => v !== null)
-  @IsString()
+export interface ProfileWithoutAvatarDto {
+  id: number;
+  userId: string;
+  nickname: string | null;
+  sentences: string | null;
+  introduce: string | null;
+}
+
+export interface ProfileWithAvatarDto extends ProfileWithoutAvatarDto {
   avatarUrl: string | null;
 }
