@@ -9,8 +9,10 @@ interface Props {
 
 export default function HeaderButton({ children, href }: Props) {
   return (
-    <div className="text-lg px-6 py-2 transition-shadow rounded-lg hover:shadow">
-      <Link href={href}>{children}</Link>
-    </div>
+    <Link href={href}>
+      <div className="text-lg px-6 py-2 transition-shadow rounded-lg hover:shadow">
+        {children}
+      </div>
+    </Link>
   );
 }

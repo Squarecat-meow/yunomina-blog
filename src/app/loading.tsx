@@ -7,8 +7,8 @@ export default function Loading() {
       <Image
         src={yunoLoading}
         alt="yuno loading"
-        width={200}
-        height={200}
+        width={100}
+        height={100}
         style={{ aspectRatio: 1 }}
       />
       <span>로딩중...</span>

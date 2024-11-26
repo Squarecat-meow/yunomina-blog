@@ -3,6 +3,7 @@
 import { fetchProfile } from "@/app/(pages)/login/action";
 import { Password, User } from "@carbon/icons-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 
@@ -21,7 +22,10 @@ export default function Login() {
   const [loading, setLoading] = useState<boolean>(false);
   const loginFailModalRef = useRef<HTMLDialogElement>(null);
 
+  const router = useRouter();
+
   const onSubmit = async (data: loginInputs) => {
+    setLoading(true);
     const res = await fetch("/api/web/login", {
       method: "POST",
       body: JSON.stringify(data),
@@ -44,11 +48,15 @@ export default function Login() {
         loginFailModalRef.current?.showModal();
         break;
       default:
-        setLoading(true);
         const profile = await fetchProfile(data.userId);
         if (profile) {
           localStorage.setItem("profile", JSON.stringify(profile));
-          window.location.replace("/");
+          window.dispatchEvent(
+            new CustomEvent("profile", {
+              bubbles: true,
+            })
+          );
+          router.replace("/");
         } else {
           loginFailModalRef.current?.showModal();
           console.error("프로필 불러오기 실패");

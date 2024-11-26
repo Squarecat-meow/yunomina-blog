@@ -13,7 +13,9 @@ import { useRouter } from "next/navigation";
 import { ProfileWithAvatarDto } from "../_dto/profile.dto";
 
 export default function Header() {
-  const [profile, setProfile] = useState<ProfileWithAvatarDto | null>(null);
+  const [profile, setProfile] = useState<
+    ProfileWithAvatarDto | null | undefined
+  >();
   const logoutModalRef = useRef<HTMLDialogElement>(null);
 
   const router = useRouter();
@@ -21,7 +23,8 @@ export default function Header() {
   const handleLogout = async () => {
     await purgeCookies();
     localStorage.clear();
-    router.replace("/");
+    setProfile(null);
+    router.refresh();
   };
 
   useEffect(() => {
@@ -62,7 +65,7 @@ export default function Header() {
       });
     });
 
-    window.addEventListener("avatar", () => {
+    window.addEventListener("profile", () => {
       const localProfile = localStorage.getItem("profile");
       if (localProfile) {
         setProfile(JSON.parse(localProfile));

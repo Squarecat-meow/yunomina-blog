@@ -105,8 +105,7 @@ export default function SettingForm({
             JSON.stringify(updatedProfileWithAvatar)
           );
           window.dispatchEvent(
-            new CustomEvent("avatar", {
-              detail: { avatarUrl: result.avatarUrl },
+            new CustomEvent("profile", {
               bubbles: true,
             })
           );
@@ -135,9 +134,8 @@ export default function SettingForm({
             "profile",
             JSON.stringify(updatedProfileWithoutAvatar)
           );
-          document.dispatchEvent(
-            new CustomEvent("avatar", {
-              detail: { avatarUrl: null },
+          window.dispatchEvent(
+            new CustomEvent("profile", {
               bubbles: true,
             })
           );
