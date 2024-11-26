@@ -25,13 +25,14 @@ export default async function About() {
       <div className="w-full grid grid-cols-[47.5%_5%_47.5%]">
         <div className="flex flex-col items-center gap-2">
           {yunochiProfile?.avatarUrl ? (
-            <Image
-              src={yunochiProfile.avatarUrl}
-              alt="Yozumina Profile"
-              width={200}
-              height={200}
-              className="rounded-full"
-            />
+            <div className="relative w-28 desktop:w-60 aspect-square">
+              <Image
+                src={yunochiProfile.avatarUrl}
+                alt="yunochi Profile"
+                fill
+                className="rounded-full"
+              />
+            </div>
           ) : (
             <div className="w-[200px] h-[200px] flex justify-center bg-base-300 rounded-full">
               <span className="text-[10rem]">
@@ -40,21 +41,24 @@ export default async function About() {
             </div>
           )}
           <span className="italic">{yunochiProfile?.sentences}</span>
-          <span className="text-3xl">저는 {yunochiProfile?.nickname}에요.</span>
-          <p>{yunochiProfile?.introduce}</p>
+          <span className="text-xl desktop:text-3xl">
+            저는 {yunochiProfile?.nickname}에요.
+          </span>
+          <p className="text-sm desktop:text-lg">{yunochiProfile?.introduce}</p>
         </div>
-        <div className="flex justify-center items-center">
+        <div className="flex justify-center pt-8 desktop:items-center ">
           <FavoriteFilled className="fill-red-500" size={50} />
         </div>
         <div className="flex flex-col items-center gap-2">
           {yozuminaProfile?.avatarUrl ? (
-            <Image
-              src={yozuminaProfile.avatarUrl}
-              alt="Yozumina Profile"
-              width={200}
-              height={200}
-              className="rounded-full"
-            />
+            <div className="relative w-28 desktop:w-60 aspect-square">
+              <Image
+                src={yozuminaProfile.avatarUrl}
+                alt="Yozumina Profile"
+                fill
+                className="rounded-full"
+              />
+            </div>
           ) : (
             <div className="w-[200px] h-[200px] flex justify-center bg-base-300 rounded-full">
               <span className="text-[10rem]">
@@ -63,10 +67,12 @@ export default async function About() {
             </div>
           )}
           <span className="italic">{yozuminaProfile?.sentences}</span>
-          <span className="text-3xl">
+          <span className="text-xl desktop:text-3xl">
             저는 {yozuminaProfile?.nickname}에요.
           </span>
-          <p>{yozuminaProfile?.introduce}</p>
+          <p className="text-sm desktop:text-lg">
+            {yozuminaProfile?.introduce}
+          </p>
         </div>
       </div>
     </div>
