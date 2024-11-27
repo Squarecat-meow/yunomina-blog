@@ -15,6 +15,11 @@ const IBMMono = localFont({
   variable: "--font-ibm-mono",
   weight: "100 900",
 });
+const Pretendard = localFont({
+  src: "./fonts/PretendardVariable.woff2",
+  variable: "--font-pretendard-variable",
+  weight: "100 400 700",
+});
 
 export const metadata: Metadata = {
   title: "놋치미나의 아늑한 집",
@@ -29,7 +34,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${noonnuuGotinc.variable} ${IBMMono.variable} font-[family-name:var(--font-noonnuu-gothic)] antialiased flex flex-col items-center p-2 desktop:p-6`}
+        className={`${Pretendard.variable} ${IBMMono.variable} font-[family-name:var(--font-pretendard-variable)] antialiased flex flex-col items-center p-2 desktop:p-6`}
       >
         <Suspense fallback={<Loading />}>
           <Header />
