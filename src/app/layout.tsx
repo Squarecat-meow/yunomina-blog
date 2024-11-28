@@ -5,11 +5,6 @@ import Header from "./@header/page";
 import { Suspense } from "react";
 import Loading from "./loading";
 
-const noonnuuGotinc = localFont({
-  src: "./fonts/NoonnuBasicGothicRegular.ttf",
-  variable: "--font-noonnuu-gothic",
-  weight: "100 900",
-});
 const IBMMono = localFont({
   src: "./fonts/IBMPlexMono-Medium.ttf",
   variable: "--font-ibm-mono",

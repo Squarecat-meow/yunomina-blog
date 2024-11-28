@@ -46,7 +46,9 @@ export default function LoggedinIcons({
           className="dropdown-content menu rounded-box z-[1] mt-2 w-36 p-2 shadow"
         >
           <li>
-            <span>글쓰기</span>
+            <Link href={"/writer"}>
+              <span>글쓰기</span>
+            </Link>
           </li>
           <li>
             <Link href={"/setting"}>

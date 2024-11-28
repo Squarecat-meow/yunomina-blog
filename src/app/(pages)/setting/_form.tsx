@@ -157,7 +157,7 @@ export default function SettingForm({
   return (
     <div className="w-full grid grid-cols-1 desktop:grid-cols-3 gap-4">
       <div className="flex flex-col items-center gap-4 desktop:border-r">
-        <span className="text-2xl">아바타 설정</span>
+        <span className="text-2xl font-bold">아바타 설정</span>
         <div className="w-48 h-48 flex justify-center items-center rounded-full border border-dashed border-slate-400">
           {avatar ? (
             <>
@@ -205,7 +205,7 @@ export default function SettingForm({
         >
           <div className="border-b border-b-black">
             <label className="input flex items-center gap-2">
-              닉네임
+              <span className="font-bold">닉네임</span>
               <input
                 {...register("nickname", { required: true })}
                 type="text"
@@ -215,7 +215,7 @@ export default function SettingForm({
           </div>
           <div className="border-b border-b-black">
             <label className="input flex items-center gap-2">
-              한마디
+              <span className="font-bold">한마디</span>
               <input
                 {...register("sentences")}
                 type="text"
@@ -225,7 +225,7 @@ export default function SettingForm({
           </div>
           <div>
             <label className="flex flex-col mt-2">
-              <span className="ml-4 mb-4">자기소개</span>
+              <span className="ml-4 mb-4 font-bold">자기소개</span>
               <textarea
                 {...register("introduce")}
                 className="textarea textarea-bordered border-black h-36"

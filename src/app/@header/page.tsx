@@ -105,7 +105,7 @@ export default function Header() {
         </div>
       </div>
       <div className="flex items-center gap-12">
-        <span className="text-2xl">놋치미나의 아늑한 집</span>
+        <span className="text-2xl font-bold">놋치미나의 아늑한 집</span>
         <div className="hidden desktop:flex flex-col desktop:flex-row items-center">
           <HeaderButton href="/">Home</HeaderButton>
           <HeaderButton href="/posts">Posts</HeaderButton>

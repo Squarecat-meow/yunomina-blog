@@ -37,12 +37,14 @@ export default function Login() {
           type: "idNotFound",
           message: "아이디가 없습니다!",
         });
+        setLoading(false);
         break;
       case 401:
         setError("password", {
           type: "passwordNotMatch",
           message: "비밀번호가 다릅니다!",
         });
+        setLoading(false);
         break;
       case 500:
         loginFailModalRef.current?.showModal();

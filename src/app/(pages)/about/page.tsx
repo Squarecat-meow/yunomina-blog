@@ -19,8 +19,9 @@ export default async function About() {
   return (
     <div className="w-full flex flex-col items-center">
       <span className="m-8 italic text-xl">
-        "이 곳은 놋치와 미나가 편하게 쉬고 글을 쓰는 아늑한 집이에요. 방문하신
-        분도 편하게 쉬시고 저희가 쓴 글도 보시고 가끔은 커피도 내려드릴게요."
+        &quot;이 곳은 놋치와 미나가 편하게 쉬고 글을 쓰는 아늑한 집이에요.
+        방문하신 분도 편하게 쉬시고 저희가 쓴 글도 보시고 가끔은 커피도
+        내려드릴게요.&quot;
       </span>
       <div className="w-full grid grid-cols-[47.5%_5%_47.5%]">
         <div className="flex flex-col items-center gap-2">
@@ -40,11 +41,13 @@ export default async function About() {
               </span>
             </div>
           )}
-          <span className="italic">{yunochiProfile?.sentences}</span>
-          <span className="text-xl desktop:text-3xl">
+          <span className="italic font-thin">{yunochiProfile?.sentences}</span>
+          <span className="text-xl desktop:text-3xl font-bold">
             저는 {yunochiProfile?.nickname}에요.
           </span>
-          <p className="text-sm desktop:text-lg">{yunochiProfile?.introduce}</p>
+          <p className="text-sm desktop:text-lg whitespace-pre-line">
+            {yunochiProfile?.introduce}
+          </p>
         </div>
         <div className="flex justify-center pt-8 desktop:items-center ">
           <FavoriteFilled className="fill-red-500" size={50} />
@@ -66,11 +69,11 @@ export default async function About() {
               </span>
             </div>
           )}
-          <span className="italic">{yozuminaProfile?.sentences}</span>
-          <span className="text-xl desktop:text-3xl">
+          <span className="italic font-thin">{yozuminaProfile?.sentences}</span>
+          <span className="text-xl desktop:text-3xl font-bold">
             저는 {yozuminaProfile?.nickname}에요.
           </span>
-          <p className="text-sm desktop:text-lg">
+          <p className="text-sm desktop:text-lg whitespace-pre-line">
             {yozuminaProfile?.introduce}
           </p>
         </div>
