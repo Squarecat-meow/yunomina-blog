@@ -29,20 +29,6 @@ export default function Header() {
     const menuItem = document.querySelectorAll(".menu_item");
     const drawer = document.getElementById("menu_drawer") as HTMLInputElement;
 
-    (async () => {
-      try {
-        const localProfile = localStorage.getItem("profile");
-        if (!localProfile) {
-          throw new Error("localStorage에 프로필이 없어요!");
-        }
-        const parsedLocalProfile = JSON.parse(localProfile);
-        setProfile(parsedLocalProfile);
-      } catch (err) {
-        alert(err);
-        handleLogout();
-      }
-    })();
-
     menuItem.forEach((item) => {
       item.addEventListener("click", () => {
         drawer.checked = false;
