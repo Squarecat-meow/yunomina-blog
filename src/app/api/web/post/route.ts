@@ -23,16 +23,21 @@ export async function POST(req: NextRequest) {
   const userId = await checkAuth(jwtToken.value);
   if (!userId) return sendApiError(401, "권한이 없어요!");
 
+  const user = await prisma.profile.findUnique({ where: { userId: userId } });
+  const postDate = new Date().toLocaleString("ko-KR", {
+    timeZone: "Asia/Seoul",
+  });
+
   const fileName = crypto.randomUUID();
-  const markdownWithMetadata = `export const metadata = {
-      title: "${data.title}",
-      author: "${userId}"
-    };
+  const markdownWithMetadata = `---
+title: ${data.title}
+author: ${user?.nickname}
+avatarUrl: ${user?.avatarUrl}
+postDate: ${postDate}
+---
 
-    # ${data.title}
-
-    ${data.body}
-    `;
+${data.body}
+`;
 
   const res = await s3.send(
     new PutObjectCommand({

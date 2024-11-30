@@ -4,6 +4,7 @@ CREATE TABLE "post" (
     "title" TEXT NOT NULL,
     "userId" TEXT NOT NULL,
     "postUrl" TEXT NOT NULL,
+    "postAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "post_pkey" PRIMARY KEY ("id")
 );

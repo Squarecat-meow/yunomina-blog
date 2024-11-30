@@ -51,6 +51,7 @@ export default function Writer() {
         author: profile.userId,
         body: markdown ?? "",
       };
+
       const res = await fetch("/api/web/post", {
         method: "POST",
         body: JSON.stringify(payload),

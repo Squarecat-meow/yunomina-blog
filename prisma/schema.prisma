@@ -36,5 +36,6 @@ model post {
   title        String
   userId       String
   postUrl      String
+  postAt       DateTime @default(now())
   author       profile @relation(fields: [userId], references: [userId])
 }

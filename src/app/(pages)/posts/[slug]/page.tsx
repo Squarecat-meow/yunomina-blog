@@ -1,6 +1,8 @@
+import { FrontmatterDto } from "@/app/_dto/post.dto";
 import NotFound from "@/app/not-found";
 import { GetPrismaClient } from "@/utils/getPrismaClient/getPrismaClient";
-import { MDXRemote } from "next-mdx-remote/rsc";
+import { compileMDX, MDXRemote } from "next-mdx-remote/rsc";
+import Image from "next/image";
 
 type PageProps = {
   params: {
@@ -18,10 +20,32 @@ export default async function Post({ params }: PageProps) {
   if (postUrl) {
     const res = await fetch(postUrl.postUrl);
     const markdown = await res.text();
+    const { content, frontmatter } = await compileMDX<FrontmatterDto>({
+      source: markdown,
+      options: {
+        parseFrontmatter: true,
+      },
+    });
 
     return (
       <section className="prose w-full">
-        <MDXRemote source={markdown} />
+        <h1 className="text-5xl mb-2">{frontmatter.title}</h1>
+        <span className="text-sm">
+          {frontmatter.postDate.toLocaleString("ko-KR", {
+            timeZone: "Asia/Seoul",
+          })}
+        </span>
+        <div className="h-fit flex items-center gap-2">
+          <Image
+            src={frontmatter.avatarUrl}
+            width={50}
+            height={50}
+            alt="author avatar"
+            className="m-0 rounded-full"
+          />
+          <span>{frontmatter.author}</span>
+        </div>
+        {content}
       </section>
     );
   } else {
