@@ -106,38 +106,34 @@ export default function Header() {
           <HeaderButton href="/about">About</HeaderButton>
         </div>
       </div>
-      <div className="flex gap-6">
-        {profile !== undefined ? (
-          <>
-            {profile !== null ? (
-              <>
-                <LoggedinIcons
-                  avatarUrl={profile.avatarUrl}
-                  nickname={
-                    profile.nickname ? profile.nickname : profile.userId
-                  }
-                  userId={profile.userId}
-                  logoutModalRef={logoutModalRef.current}
-                />
-              </>
-            ) : (
-              <>
-                <button className="btn btn-circle btn-outline border-transparent">
-                  <Link href={"/login"}>
-                    <Login size={24} />
-                  </Link>
-                </button>
-              </>
-            )}
-          </>
-        ) : (
-          <>
-            <div>
-              <span className="loading loading-spinner loading-sm" />
-            </div>
-          </>
-        )}
-      </div>
+      {profile !== undefined ? (
+        <>
+          {profile !== null ? (
+            <>
+              <LoggedinIcons
+                avatarUrl={profile.avatarUrl}
+                nickname={profile.nickname ? profile.nickname : profile.userId}
+                userId={profile.userId}
+                logoutModalRef={logoutModalRef.current}
+              />
+            </>
+          ) : (
+            <>
+              <button className="btn btn-circle btn-outline border-transparent">
+                <Link href={"/login"}>
+                  <Login size={24} />
+                </Link>
+              </button>
+            </>
+          )}
+        </>
+      ) : (
+        <>
+          <div>
+            <span className="loading loading-spinner loading-sm" />
+          </div>
+        </>
+      )}
       <dialog id="logout" ref={logoutModalRef} className="modal">
         <div className="modal-box">
           <h3 className="font-bold text-lg">로그아웃</h3>

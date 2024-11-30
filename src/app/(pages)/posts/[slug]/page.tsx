@@ -43,7 +43,7 @@ export default async function Post({ params }: PageProps) {
             alt="author avatar"
             className="m-0 rounded-full"
           />
-          <span>{frontmatter.author}</span>
+          <span className="text-lg">{frontmatter.author}</span>
         </div>
         {content}
       </section>

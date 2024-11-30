@@ -43,7 +43,7 @@ export default function LoggedinIcons({
         </div>
         <ul
           tabIndex={0}
-          className="dropdown-content menu rounded-box z-[1] mt-2 w-36 p-2 shadow"
+          className="dropdown-content menu bg-base-100 z-[1] rounded-box mt-2 w-36 p-2 shadow"
         >
           <li>
             <Link href={"/writer"}>
