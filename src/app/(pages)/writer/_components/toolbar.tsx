@@ -1,6 +1,13 @@
 "use client";
 
-import { Dispatch, useCallback, useEffect, useMemo, useState } from "react";
+import {
+  Dispatch,
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import EditorButton from "./components/button";
 import {
   CarbonIconType,
@@ -15,6 +22,8 @@ import {
   ListNumbered,
   TextLongParagraph,
   Code,
+  Quotes,
+  Image,
 } from "@carbon/icons-react";
 import { BsTypeH1, BsTypeH2, BsTypeH3 } from "react-icons/bs";
 import EditorDivider from "./components/divider";
@@ -38,21 +47,34 @@ import {
   RangeSelection,
   $getNodeByKey,
 } from "lexical";
-import { formatHeading, formatParagraph } from "./utils/toolbarUtils";
+import {
+  formatBulletList,
+  formatCheckList,
+  formatCode,
+  formatHeading,
+  formatNumberedList,
+  formatParagraph,
+  formatQuote,
+} from "./utils/toolbarUtils";
 import EditorDropdown from "./components/dropdown";
 import { IconType } from "react-icons";
 import { $isListNode, ListNode } from "@lexical/list";
 import { $isHeadingNode } from "@lexical/rich-text";
 import {
   $isCodeNode,
+  CODE_LANGUAGE_FRIENDLY_NAME_MAP,
+  CODE_LANGUAGE_MAP,
   getCodeLanguages,
   getDefaultCodeLanguage,
 } from "@lexical/code";
 import { $isAtNodeEnd } from "@lexical/selection";
 import { $isLinkNode } from "@lexical/link";
+import { blockTypeToBlockName } from "./utils/toolbarUtils";
+import EditorCodeDropdown from "./components/codeDropdown";
+import { EditorContext } from "../page";
 
 export type DropdownType = {
-  key: number;
+  key: string;
   carbonIcon?: CarbonIconType;
   faIcon?: IconType;
   string: string;
@@ -88,7 +110,8 @@ export default function ToolbarPlugin({
 }) {
   const [canUndo, setCanUndo] = useState(false);
   const [canRedo, setCanRedo] = useState(false);
-  const [blockType, setBlockType] = useState("paragraph");
+  const [blockType, setBlockType] =
+    useState<keyof typeof blockTypeToBlockName>("paragraph");
   const [isBold, setIsBold] = useState(false);
   const [isItalic, setIsItalic] = useState(false);
   const [isUnderline, setIsUnderline] = useState(false);
@@ -101,48 +124,62 @@ export default function ToolbarPlugin({
   const [isLink, setIsLink] = useState(false);
   const [isEditable, setIsEditable] = useState(() => editor.isEditable());
 
+  const setEditor = useContext(EditorContext);
+
   const dropdownList: DropdownType[] = [
     {
-      key: 0,
+      key: "paragraph",
       carbonIcon: TextLongParagraph,
       string: "Normal",
       onClick: () => formatParagraph(editor),
     },
     {
-      key: 1,
+      key: "h1",
       faIcon: BsTypeH1,
       string: "Heading 1",
       onClick: () => formatHeading(editor, blockType, "h1"),
     },
     {
-      key: 2,
+      key: "h2",
       faIcon: BsTypeH2,
       string: "Heading 2",
+      onClick: () => formatHeading(editor, blockType, "h2"),
     },
     {
-      key: 3,
+      key: "h3",
       faIcon: BsTypeH3,
       string: "Heading 3",
+      onClick: () => formatHeading(editor, blockType, "h3"),
     },
     {
-      key: 4,
+      key: "bullet",
       carbonIcon: ListBulleted,
-      string: "Bullet List",
+      string: "Bulleted List",
+      onClick: () => formatBulletList(editor, blockType),
     },
     {
-      key: 5,
+      key: "number",
       carbonIcon: ListNumbered,
       string: "Numbered List",
+      onClick: () => formatNumberedList(editor, blockType),
+    },
+    // {
+    //   key: "check",
+    //   carbonIcon: ListBoxes,
+    //   string: "Check List",
+    //   onClick: () => formatCheckList(editor, blockType),
+    // },
+    {
+      key: "quote",
+      carbonIcon: Quotes,
+      string: "Quote",
+      onClick: () => formatQuote(editor, blockType),
     },
     {
-      key: 6,
-      carbonIcon: ListBoxes,
-      string: "Check List",
-    },
-    {
-      key: 7,
+      key: "code",
       carbonIcon: Code,
       string: "Code Block",
+      onClick: () => formatCode(editor, blockType),
     },
   ];
 
@@ -160,17 +197,28 @@ export default function ToolbarPlugin({
         setSelectedElementKey(elementKey);
         if ($isListNode(element)) {
           const parentList = $getNearestNodeOfType(anchorNode, ListNode);
-          const type = parentList ? parentList.getTag() : element.getTag();
+          const type = parentList
+            ? parentList.getListType()
+            : element.getListType();
           setBlockType(type);
         } else {
           const type = $isHeadingNode(element)
             ? element.getTag()
             : element.getType();
+          if (type in blockTypeToBlockName) {
+            setBlockType(type as keyof typeof blockTypeToBlockName);
+          }
           if ($isCodeNode(element)) {
-            setCodeLanguage(element.getLanguage() || getDefaultCodeLanguage());
+            const language =
+              element.getLanguage() as keyof typeof CODE_LANGUAGE_MAP;
+            setCodeLanguage(
+              language ? CODE_LANGUAGE_MAP[language] || language : ""
+            );
+            return;
           }
         }
       }
+
       // Update text format
       setIsBold(selection.hasFormat("bold"));
       setIsItalic(selection.hasFormat("italic"));
@@ -189,20 +237,19 @@ export default function ToolbarPlugin({
     }
   }, [activeEditor]);
 
-  const codeLanguges = useMemo(() => getCodeLanguages(), []);
-  const onCodeLanguageSelect = useCallback(
-    (e) => {
-      editor.update(() => {
-        if (selectedElementKey !== null) {
-          const node = $getNodeByKey(selectedElementKey);
-          if ($isCodeNode(node)) {
-            node.setLanguage(e.target.value);
-          }
-        }
-      });
-    },
-    [editor, selectedElementKey]
-  );
+  function getCodeLanguageOptions(): [string, string][] {
+    const options: [string, string][] = [];
+
+    for (const [lang, friendlyName] of Object.entries(
+      CODE_LANGUAGE_FRIENDLY_NAME_MAP
+    )) {
+      options.push([lang, friendlyName]);
+    }
+
+    return options;
+  }
+
+  const CODE_LANGUAGE_OPTIONS = getCodeLanguageOptions();
 
   useEffect(() => {
     return editor.registerCommand(
@@ -223,6 +270,7 @@ export default function ToolbarPlugin({
   }, [activeEditor, $updateToolbar]);
 
   useEffect(() => {
+    if (setEditor) setEditor(editor);
     return mergeRegister(
       editor.registerEditableListener((editable) => {
         setIsEditable(editable);
@@ -260,58 +308,78 @@ export default function ToolbarPlugin({
   }, [editor, activeEditor, $updateToolbar]);
 
   return (
-    <div className="h-12 flex items-center p-2 border-b border-base-300">
-      <EditorButton
-        disabled={!canUndo || !isEditable}
-        onClick={() => activeEditor.dispatchCommand(UNDO_COMMAND, undefined)}
-      >
-        <Undo className={`${!canUndo && "fill-gray-400"}`} />
-      </EditorButton>
-      <EditorButton
-        disabled={!canRedo || !isEditable}
-        onClick={() => activeEditor.dispatchCommand(REDO_COMMAND, undefined)}
-      >
-        <Redo className={`${!canRedo && "fill-gray-400"}`} />
-      </EditorButton>
-      <EditorDivider />
-      <EditorDropdown props={dropdownList} />
-      <EditorDivider />
-      <EditorButton
-        onClick={() =>
-          activeEditor.dispatchCommand(FORMAT_TEXT_COMMAND, "bold")
-        }
-        disabled={!isEditable}
-        className={`${isBold && "bg-base-200"}`}
-      >
-        <TextBold size={20} />
-      </EditorButton>
-      <EditorButton
-        onClick={() =>
-          activeEditor.dispatchCommand(FORMAT_TEXT_COMMAND, "italic")
-        }
-        disabled={!isEditable}
-        className={`${isItalic && "bg-base-200"}`}
-      >
-        <TextItalic size={20} />
-      </EditorButton>
-      <EditorButton
-        onClick={() =>
-          activeEditor.dispatchCommand(FORMAT_TEXT_COMMAND, "underline")
-        }
-        disabled={!isEditable}
-        className={`${isUnderline && "bg-base-200"}`}
-      >
-        <TextUnderline size={20} />
-      </EditorButton>
-      <EditorButton
-        onClick={() =>
-          activeEditor.dispatchCommand(FORMAT_TEXT_COMMAND, "strikethrough")
-        }
-        disabled={!isEditable}
-        className={`${isStrikethrough && "bg-base-200"}`}
-      >
-        <TextStrikethrough size={20} />
-      </EditorButton>
+    <div className="h-18 desktop:h-12 flex flex-col desktop:flex-row desktop:items-center p-2 border-b border-base-300">
+      <div className="flex items-center">
+        <EditorButton
+          disabled={!canUndo || !isEditable}
+          onClick={() => activeEditor.dispatchCommand(UNDO_COMMAND, undefined)}
+        >
+          <Undo className={`${!canUndo && "fill-gray-400"}`} />
+        </EditorButton>
+        <EditorButton
+          disabled={!canRedo || !isEditable}
+          onClick={() => activeEditor.dispatchCommand(REDO_COMMAND, undefined)}
+        >
+          <Redo className={`${!canRedo && "fill-gray-400"}`} />
+        </EditorButton>
+        <EditorDivider />
+        <EditorDropdown props={dropdownList} blockType={blockType} />
+      </div>
+      <div className="flex items-center">
+        <EditorDivider className={`hidden desktop:flex`} />
+        {blockType === "code" ? (
+          <>
+            <EditorCodeDropdown language={CODE_LANGUAGE_OPTIONS} />
+          </>
+        ) : (
+          <>
+            <EditorButton
+              onClick={() =>
+                activeEditor.dispatchCommand(FORMAT_TEXT_COMMAND, "bold")
+              }
+              disabled={!isEditable}
+              className={`${isBold && "bg-base-200"}`}
+            >
+              <TextBold size={20} />
+            </EditorButton>
+            <EditorButton
+              onClick={() =>
+                activeEditor.dispatchCommand(FORMAT_TEXT_COMMAND, "italic")
+              }
+              disabled={!isEditable}
+              className={`${isItalic && "bg-base-200"}`}
+            >
+              <TextItalic size={20} />
+            </EditorButton>
+            <EditorButton
+              onClick={() =>
+                activeEditor.dispatchCommand(FORMAT_TEXT_COMMAND, "underline")
+              }
+              disabled={!isEditable}
+              className={`${isUnderline && "bg-base-200"}`}
+            >
+              <TextUnderline size={20} />
+            </EditorButton>
+            <EditorButton
+              onClick={() =>
+                activeEditor.dispatchCommand(
+                  FORMAT_TEXT_COMMAND,
+                  "strikethrough"
+                )
+              }
+              disabled={!isEditable}
+              className={`${isStrikethrough && "bg-base-200"}`}
+            >
+              <TextStrikethrough size={20} />
+            </EditorButton>
+            <EditorDivider />
+            <EditorButton>
+              <Image size={20} />
+            </EditorButton>
+          </>
+        )}
+      </div>
+      <div className="w-full flex justify-end p-2"></div>
     </div>
   );
 }

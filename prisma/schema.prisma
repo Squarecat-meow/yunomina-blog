@@ -28,4 +28,13 @@ model profile {
   sentences    String?
   introduce    String?
   user         user    @relation(fields: [userId], references: [userId])
+  post         post[]
+}
+
+model post {
+  id           Int    @id @default(autoincrement())
+  title        String
+  userId       String
+  postUrl      String
+  author       profile @relation(fields: [userId], references: [userId])
 }

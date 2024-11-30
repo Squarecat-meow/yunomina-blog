@@ -29,6 +29,14 @@ export default function Header() {
     const menuItem = document.querySelectorAll(".menu_item");
     const drawer = document.getElementById("menu_drawer") as HTMLInputElement;
 
+    const localProfile = localStorage.getItem("profile");
+    if (localProfile) {
+      const parsedLocalProfile = JSON.parse(localProfile);
+      setProfile(parsedLocalProfile);
+    } else {
+      setProfile(null);
+    }
+
     menuItem.forEach((item) => {
       item.addEventListener("click", () => {
         drawer.checked = false;
@@ -99,9 +107,9 @@ export default function Header() {
         </div>
       </div>
       <div className="flex gap-6">
-        {profile ? (
+        {profile !== undefined ? (
           <>
-            {profile.userId !== "" ? (
+            {profile !== null ? (
               <>
                 <LoggedinIcons
                   avatarUrl={profile.avatarUrl}
@@ -113,17 +121,21 @@ export default function Header() {
                 />
               </>
             ) : (
-              <div>
-                <span className="loading loading-spinner loading-sm" />
-              </div>
+              <>
+                <button className="btn btn-circle btn-outline border-transparent">
+                  <Link href={"/login"}>
+                    <Login size={24} />
+                  </Link>
+                </button>
+              </>
             )}
           </>
         ) : (
-          <button className="btn btn-circle btn-outline border-transparent">
-            <Link href={"/login"}>
-              <Login size={24} />
-            </Link>
-          </button>
+          <>
+            <div>
+              <span className="loading loading-spinner loading-sm" />
+            </div>
+          </>
         )}
       </div>
       <dialog id="logout" ref={logoutModalRef} className="modal">

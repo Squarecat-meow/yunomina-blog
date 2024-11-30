@@ -1,6 +1,9 @@
 import type { NextConfig } from "next";
+import createMDX from "@next/mdx";
 
 const nextConfig: NextConfig = {
+  pageExtensions: ["js", "jsx", "md", "mdx", "ts", "tsx"],
+  transpilePackages: ["next-mdx-remote"],
   images: {
     remotePatterns: [
       {
@@ -15,4 +18,8 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default nextConfig;
+const withMDX = createMDX({
+  // 추가적인 마크다운 플러그인 설정 가능
+});
+
+export default withMDX(nextConfig);

@@ -8,6 +8,12 @@ import { LexicalErrorBoundary } from "@lexical/react/LexicalErrorBoundary";
 import ToolbarPlugin from "./toolbar";
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 import { useState } from "react";
+import { ListPlugin } from "@lexical/react/LexicalListPlugin";
+import CodeHighlightPlugin from "./utils/codeHighlightPlugin";
+import {
+  DEFAULT_TRANSFORMERS,
+  MarkdownShortcutPlugin,
+} from "@lexical/react/LexicalMarkdownShortcutPlugin";
 
 export default function Editor() {
   const [editor] = useLexicalComposerContext();
@@ -22,11 +28,18 @@ export default function Editor() {
       />
       <div className="p-4">
         <RichTextPlugin
-          contentEditable={<ContentEditable className="editor-input" />}
+          contentEditable={
+            <div>
+              <ContentEditable className="min-h-[calc(100vh-242px-48px)] focus:outline-none" />
+            </div>
+          }
           ErrorBoundary={LexicalErrorBoundary}
         />
         <HistoryPlugin />
         <AutoFocusPlugin />
+        <ListPlugin />
+        <CodeHighlightPlugin />
+        <MarkdownShortcutPlugin transformers={DEFAULT_TRANSFORMERS} />
       </div>
     </div>
   );

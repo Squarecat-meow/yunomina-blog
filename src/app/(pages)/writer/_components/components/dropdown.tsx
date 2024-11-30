@@ -1,17 +1,29 @@
-import { createElement, RefObject, useRef, useState } from "react";
+"use client";
+
+import { createElement, useCallback, useEffect, useRef, useState } from "react";
 import { DropdownType } from "../toolbar";
+import { blockTypeToBlockName } from "../utils/toolbarUtils";
 
 type PropsType = {
   props: DropdownType[];
+  blockType: keyof typeof blockTypeToBlockName;
 };
-
-export default function EditorDropdown({ props }: PropsType) {
+export default function EditorDropdown({ props, blockType }: PropsType) {
   const [activeItem, setActiveItem] = useState<DropdownType>(props[0]);
   const dropdownRef = useRef<HTMLDetailsElement>(null);
 
+  const $updateBlockType = useCallback(() => {
+    const keys = props.find((el) => el.key === blockType);
+    if (keys) setActiveItem(keys);
+  }, [props, blockType]);
+
+  useEffect(() => {
+    $updateBlockType();
+  }, [blockType]);
+
   return (
     <details className="dropdown" ref={dropdownRef}>
-      <summary tabIndex={0} className="select select-sm w-44 flex items-center">
+      <summary className="select select-sm w-44 flex items-center">
         <div className="flex items-center gap-2">
           {activeItem.carbonIcon ? (
             <>
@@ -31,7 +43,6 @@ export default function EditorDropdown({ props }: PropsType) {
         </div>
       </summary>
       <ul
-        tabIndex={0}
         className="dropdown-content menu bg-base-100 rounded-box z-[1] w-52 p-2 shadow"
       >
         {props.map((el) => (
