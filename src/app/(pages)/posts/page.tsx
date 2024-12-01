@@ -10,7 +10,7 @@ export default async function Posts() {
     <div className="w-full p-2">
       {posts.map((post) => (
         <Link href={`/posts/${post.id}`} key={post.id}>
-          <div className="w-full my-2 p-2 border border-base-200 rounded-box hover:shadow transition-shadow">
+          <div className="w-full my-2 p-4 border space-y-2 border-base-200 rounded-box hover:shadow transition-shadow">
             <h1 className="text-2xl font-bold">{post.title}</h1>
             <div className="flex items-center gap-2">
               <Image
