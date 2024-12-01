@@ -3,7 +3,10 @@ import {
   DecoratorNode,
   DOMExportOutput,
   EditorConfig,
+  LexicalNode,
   NodeKey,
+  SerializedLexicalNode,
+  Spread,
 } from "lexical";
 import Image from "next/image";
 import { ReactElement, Suspense } from "react";
@@ -15,6 +18,16 @@ export interface ImagePayload {
   src: string;
   key?: NodeKey;
 }
+
+export type SerializedImageNode = Spread<
+  {
+    altText: string;
+    height: number;
+    src: string;
+    width: number;
+  },
+  SerializedLexicalNode
+>;
 
 export class ImageNode extends DecoratorNode<ReactElement> {
   __src: string;
@@ -29,12 +42,34 @@ export class ImageNode extends DecoratorNode<ReactElement> {
     return new ImageNode(node.__src, node.__width, node.__height, node.__key);
   }
 
+  static importJSON(serializedNode: SerializedImageNode): ImageNode {
+    const { altText, height, width, src } = serializedNode;
+    const node = $createImageNode({
+      altText,
+      height,
+      src,
+      width,
+    });
+    return node;
+  }
+
   exportDOM(): DOMExportOutput {
     const element = document.createElement("img");
     element.setAttribute("src", this.__src);
     element.setAttribute("width", this.__width.toString());
     element.setAttribute("height", this.__height.toString());
     return { element };
+  }
+
+  exportJSON(): SerializedImageNode {
+    return {
+      altText: "selected Image",
+      height: this.__height,
+      src: this.getSrc(),
+      type: "image",
+      version: 1,
+      width: this.__width,
+    };
   }
 
   setWidthAndHeight(width: number, height: number): void {
@@ -92,4 +127,10 @@ export function $createImageNode({
   key,
 }: ImagePayload): ImageNode {
   return $applyNodeReplacement(new ImageNode(src, height, width, key));
+}
+
+export function $isImageNode(
+  node: LexicalNode | null | undefined
+): node is ImageNode {
+  return node instanceof ImageNode;
 }

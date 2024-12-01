@@ -9,15 +9,41 @@ import {
   LexicalEditor,
 } from "lexical";
 import { ChangeEvent, RefObject, useEffect, useRef, useState } from "react";
-import { $createImageNode, ImageNode, ImagePayload } from "../nodes/imageNode";
+import {
+  $createImageNode,
+  $isImageNode,
+  ImageNode,
+  ImagePayload,
+} from "../nodes/imageNode";
 import Image from "next/image";
 import { Image as CarbonImage } from "@carbon/icons-react";
 import { $wrapNodeInElement, mergeRegister } from "@lexical/utils";
+import { TextMatchTransformer } from "@lexical/markdown";
 
 export type InsertImagePayload = Readonly<ImagePayload>;
 
 export const INSERT_IMAGE_COMMAND: LexicalCommand<InsertImagePayload> =
   createCommand("INSERT_IMAGE_COMMAND");
+
+export const IMAGE: TextMatchTransformer = {
+  export: (node, exportChildren, exportFormat) => {
+    if (!$isImageNode(node)) {
+      return null;
+    }
+
+    return `!['selected Image'](${node.getSrc()})`;
+  },
+  importRegExp: /!(?:\[([^[]*)\])(?:\(([^(]+)\))/,
+  regExp: /!(?:\[([^[]*)\])(?:\(([^(]+)\))$/,
+  replace: (textNode, match) => {
+    const [, altText, src] = match;
+    const imageNode = $createImageNode({ src: src, width: 800, height: 450 });
+    textNode.replace(imageNode);
+  },
+  trigger: ")",
+  type: "text-match",
+  dependencies: [],
+};
 
 export function InsertImageDialog({
   activeEditor,

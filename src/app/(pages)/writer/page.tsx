@@ -14,6 +14,7 @@ import { LexicalEditor } from "lexical";
 import Editor from "./_components/editor";
 import { useForm } from "react-hook-form";
 import { PostDto } from "@/app/_dto/post.dto";
+import { IMAGE } from "./_components/plugins/imagePlugin";
 
 type TitleType = {
   title: string;
@@ -43,7 +44,7 @@ export default function Writer() {
       postSuccessModalRef.current?.showModal();
       let markdown;
       editor.update(() => {
-        markdown = $convertToMarkdownString(TRANSFORMERS);
+        markdown = $convertToMarkdownString([IMAGE, ...TRANSFORMERS]);
       });
       const profile = JSON.parse(localStorage.getItem("profile") ?? "");
       const payload: PostDto = {
