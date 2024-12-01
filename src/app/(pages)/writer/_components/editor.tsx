@@ -14,6 +14,7 @@ import {
   DEFAULT_TRANSFORMERS,
   MarkdownShortcutPlugin,
 } from "@lexical/react/LexicalMarkdownShortcutPlugin";
+import ImagePlugin from "./plugins/imagePlugin";
 
 export default function Editor() {
   const [editor] = useLexicalComposerContext();
@@ -39,6 +40,7 @@ export default function Editor() {
         <AutoFocusPlugin />
         <ListPlugin />
         <CodeHighlightPlugin />
+        <ImagePlugin />
         <MarkdownShortcutPlugin transformers={DEFAULT_TRANSFORMERS} />
       </div>
     </div>

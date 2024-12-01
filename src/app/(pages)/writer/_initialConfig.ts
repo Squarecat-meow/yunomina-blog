@@ -3,6 +3,7 @@ import { ListItemNode, ListNode } from "@lexical/list";
 import { CodeHighlightNode, CodeNode } from "@lexical/code";
 import { HorizontalRuleNode } from "@lexical/react/LexicalHorizontalRuleNode";
 import { AutoLinkNode, LinkNode } from "@lexical/link";
+import { ImageNode } from "./_components/nodes/imageNode";
 
 const theme = {
   ltr: "ltr",
@@ -92,5 +93,6 @@ export const initialConfig = {
     ListNode,
     ListItemNode,
     QuoteNode,
+    ImageNode,
   ],
 };

@@ -72,6 +72,7 @@ import { $isLinkNode } from "@lexical/link";
 import { blockTypeToBlockName } from "./utils/toolbarUtils";
 import EditorCodeDropdown from "./components/codeDropdown";
 import { EditorContext } from "../page";
+import { InsertImageDialog } from "./plugins/imagePlugin";
 
 export type DropdownType = {
   key: string;
@@ -123,6 +124,8 @@ export default function ToolbarPlugin({
   const [codeLanguage, setCodeLanguage] = useState<string>("");
   const [isLink, setIsLink] = useState(false);
   const [isEditable, setIsEditable] = useState(() => editor.isEditable());
+
+  const ImageDialogModalRef = useRef<HTMLDialogElement>(null);
 
   const setEditor = useContext(EditorContext);
 
@@ -373,7 +376,13 @@ export default function ToolbarPlugin({
               <TextStrikethrough size={20} />
             </EditorButton>
             <EditorDivider />
-            <EditorButton>
+            <EditorButton
+              onClick={() => ImageDialogModalRef.current?.showModal()}
+            >
+              <InsertImageDialog
+                activeEditor={activeEditor}
+                ref={ImageDialogModalRef}
+              />
               <Image size={20} />
             </EditorButton>
           </>
