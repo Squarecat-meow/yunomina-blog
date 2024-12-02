@@ -4,7 +4,10 @@ import Link from "next/link";
 
 export default async function Posts() {
   const prisma = GetPrismaClient.getClient();
-  const posts = await prisma.post.findMany({ include: { author: true } });
+  const posts = await prisma.post.findMany({
+    include: { author: true },
+    orderBy: { id: "desc" },
+  });
 
   return (
     <div className="w-full p-2">
