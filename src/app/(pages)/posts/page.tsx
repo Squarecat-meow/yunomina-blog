@@ -11,26 +11,36 @@ export default async function Posts() {
 
   return (
     <div className="w-full p-2">
-      {posts.map((post) => (
-        <Link href={`/posts/${post.id}`} key={post.id}>
-          <div className="w-full my-2 p-4 border space-y-2 border-base-200 rounded-box hover:shadow transition-shadow">
-            <h1 className="text-2xl font-bold">{post.title}</h1>
-            <div className="flex items-center gap-2">
-              <Image
-                src={post.author.avatarUrl ?? ""}
-                width={30}
-                height={30}
-                alt="author avatar"
-                className="rounded-full"
-              />
-              <span className="text-xl">{post.author.nickname}</span>
-            </div>
-            <h2 className="text-sm">
-              {post.postAt.toLocaleString("ko-KR", { timeZone: "Asia/Seoul" })}
-            </h2>
-          </div>
-        </Link>
-      ))}
+      {posts.length !== 0 ? (
+        <>
+          {posts.map((post) => (
+            <Link href={`/posts/${post.id}`} key={post.id}>
+              <div className="w-full my-2 p-4 border space-y-2 border-base-200 rounded-box hover:shadow transition-shadow">
+                <h1 className="text-2xl font-bold">{post.title}</h1>
+                <div className="flex items-center gap-2">
+                  <Image
+                    src={post.author.avatarUrl ?? ""}
+                    width={30}
+                    height={30}
+                    alt="author avatar"
+                    className="rounded-full"
+                  />
+                  <span className="text-xl">{post.author.nickname}</span>
+                </div>
+                <h2 className="text-sm">
+                  {post.postAt.toLocaleString("ko-KR", {
+                    timeZone: "Asia/Seoul",
+                  })}
+                </h2>
+              </div>
+            </Link>
+          ))}
+        </>
+      ) : (
+        <div className="w-full flex justify-center">
+          <span className="text-2xl font-bold">글이 없어요!</span>
+        </div>
+      )}
     </div>
   );
 }

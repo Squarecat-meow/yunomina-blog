@@ -9,6 +9,8 @@ import LoggedinIcons from "./components/loggedInIcons";
 import { purgeCookies } from "./action";
 import { useRouter } from "next/navigation";
 import { ProfileWithAvatarDto } from "../_dto/profile.dto";
+import headerImage from "../../../public/header-image.gif";
+import Image from "next/image";
 
 export default function Header() {
   const [profile, setProfile] = useState<
@@ -99,7 +101,7 @@ export default function Header() {
         </div>
       </div>
       <div className="flex items-center gap-12">
-        <span className="text-2xl font-bold">놋치미나의 아늑한 집</span>
+        <Image src={headerImage} alt="header yunomina" />
         <div className="hidden desktop:flex flex-col desktop:flex-row items-center">
           <HeaderButton href="/">Home</HeaderButton>
           <HeaderButton href="/posts">Posts</HeaderButton>
