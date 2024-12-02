@@ -15,6 +15,9 @@ const nextConfig: NextConfig = {
   },
   experimental: {
     forceSwcTransforms: true,
+    serverActions: {
+      bodySizeLimit: "5mb",
+    },
   },
 };
 

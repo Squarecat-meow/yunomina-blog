@@ -15,6 +15,9 @@ import Editor from "./_components/editor";
 import { useForm } from "react-hook-form";
 import { PostDto } from "@/app/_dto/post.dto";
 import { IMAGE } from "./_components/plugins/imagePlugin";
+import { getCookie } from "@/app/_actions/getCookie";
+import { checkAuth } from "@/utils/jwt/checkAuth";
+import { uploadToS3 } from "./_components/actions/action";
 
 type TitleType = {
   title: string;
@@ -39,26 +42,67 @@ export default function Writer() {
   } = useForm<TitleType>({ mode: "onBlur" });
 
   const handlePost = async () => {
-    if (editor && title) {
-      setLoading(true);
-      postSuccessModalRef.current?.showModal();
-      let markdown;
-      editor.update(() => {
-        markdown = $convertToMarkdownString([IMAGE, ...TRANSFORMERS]);
-      });
-      const profile = JSON.parse(localStorage.getItem("profile") ?? "");
-      const payload: PostDto = {
-        title: title,
-        author: profile.userId,
-        body: markdown ?? "",
-      };
+    try {
+      if (editor && title) {
+        setLoading(true);
+        postSuccessModalRef.current?.showModal();
+        let markdown: string = "";
+        editor.update(() => {
+          markdown = $convertToMarkdownString([IMAGE, ...TRANSFORMERS]);
+        });
+        const regex = new RegExp(/(?:blob)[^)]*/gm);
+        const imageUrls = [...markdown.matchAll(regex)].flat();
 
-      const res = await fetch("/api/web/post", {
-        method: "POST",
-        body: JSON.stringify(payload),
-      });
-      if (!res.ok) alert(await res.text());
-      setLoading(false);
+        const fetchUrls = async (urls: string[]) => {
+          try {
+            const promises = urls.map((url) => fetch(url));
+            const res = await Promise.all(promises);
+            const data = await Promise.all(res.map((res) => res.blob()));
+
+            return data;
+          } catch (err) {
+            alert(err);
+          }
+        };
+        const images = await fetchUrls(imageUrls)
+          .then((data) => data)
+          .catch((err) => {
+            throw new Error(err);
+          });
+
+        if (images) {
+          const promises = images.map((el) => uploadToS3(el));
+          const res = await Promise.all(promises);
+          const bucketImages = await Promise.all(res.map((res) => res));
+
+          for (const data in bucketImages) {
+            markdown = markdown.replace(/(?:blob)[^)]*/m, bucketImages[data]);
+          }
+        }
+
+        const jwtToken = await getCookie("jwtToken");
+        if (!jwtToken) {
+          throw new Error("토큰을 가져오는데 실패했어요!");
+        }
+        const userId = await checkAuth(jwtToken.value);
+        if (!userId) {
+          throw new Error("쿠키를 검증하는데 실패했어요!");
+        }
+        const payload: PostDto = {
+          title: title,
+          author: userId,
+          body: markdown ?? "",
+        };
+
+        const res = await fetch("/api/web/post", {
+          method: "POST",
+          body: JSON.stringify(payload),
+        });
+        if (!res.ok) alert(await res.text());
+        setLoading(false);
+      }
+    } catch (err) {
+      alert(err);
     }
   };
 

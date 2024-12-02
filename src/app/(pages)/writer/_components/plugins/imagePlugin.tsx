@@ -56,8 +56,9 @@ export function InsertImageDialog({
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const onClick = (payload: InsertImagePayload) => {
+  const onClick = async (payload: InsertImagePayload) => {
     activeEditor.dispatchCommand(INSERT_IMAGE_COMMAND, payload);
+    setSelectedImage(null);
     ref.current?.close();
   };
 
