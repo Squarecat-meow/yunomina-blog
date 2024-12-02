@@ -3,9 +3,12 @@
 import DialogModalLoadingOneButton from "@/app/_components/modalLoadingOneButton";
 import DialogModalTwoButton from "@/app/_components/modalTwoButton";
 import {
+  ChangeEvent,
   createContext,
   Dispatch,
   SetStateAction,
+  useCallback,
+  useEffect,
   useRef,
   useState,
 } from "react";
@@ -17,10 +20,16 @@ import { PostDto } from "@/app/_dto/post.dto";
 import { IMAGE } from "./_components/plugins/imagePlugin";
 import { getCookie } from "@/app/_actions/getCookie";
 import { checkAuth } from "@/utils/jwt/checkAuth";
-import { uploadToS3 } from "./_components/actions/action";
+import {
+  createCategory,
+  getCategory,
+  uploadToS3,
+} from "./_components/actions/action";
+import { category } from "@prisma/client";
 
-type TitleType = {
+type postType = {
   title: string;
+  category: string;
 };
 
 export const EditorContext = createContext<Dispatch<
@@ -31,15 +40,25 @@ export default function Writer() {
   const [loading, setLoading] = useState(false);
   const [editor, setEditor] = useState<LexicalEditor | null>(null);
   const [title, setTitle] = useState<string | null>(null);
+  const [category, setCategory] = useState<category[] | null | undefined>();
+  const [postCategory, setPostCategory] = useState<category>({
+    category: "",
+    id: 0,
+    owner: "",
+  });
+  const [newCategoryName, setNewCategoryName] = useState<string>("");
 
   const postConfirmModalRef = useRef<HTMLDialogElement>(null);
   const postSuccessModalRef = useRef<HTMLDialogElement>(null);
+  const createCategoryModalRef = useRef<HTMLDialogElement>(null);
 
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<TitleType>({ mode: "onBlur" });
+    trigger,
+    setValue,
+  } = useForm<postType>({ mode: "onBlur" });
 
   const handlePost = async () => {
     try {
@@ -90,6 +109,7 @@ export default function Writer() {
         }
         const payload: PostDto = {
           title: title,
+          category: postCategory,
           author: userId,
           body: markdown ?? "",
         };
@@ -106,10 +126,42 @@ export default function Writer() {
     }
   };
 
-  const onSubmit = (data: TitleType) => {
+  const onSubmit = (data: postType) => {
     setTitle(data.title);
     postConfirmModalRef.current?.showModal();
   };
+
+  const onCategoryChange = (e: ChangeEvent<HTMLSelectElement>) => {
+    switch (e.target.value) {
+      case "create-category":
+        createCategoryModalRef.current?.showModal();
+        break;
+      case "":
+        trigger();
+        break;
+      default:
+        const filteredCategory = category?.find(
+          (el) => el.id === parseInt(e.target.value)
+        );
+        setPostCategory(filteredCategory ?? { category: "", id: 0, owner: "" });
+        break;
+    }
+  };
+
+  const getCategoryFromServer = useCallback(async () => {
+    const gotCategory = await getCategory();
+    setCategory(gotCategory);
+  }, []);
+
+  const createCategoryFromServer = useCallback(async () => {
+    const newCategory = await createCategory(newCategoryName);
+    setCategory((prevCategory) => [...(prevCategory || []), newCategory]);
+    setValue("category", newCategory.category);
+  }, [newCategoryName, setValue]);
+
+  useEffect(() => {
+    getCategoryFromServer();
+  }, [getCategoryFromServer]);
 
   return (
     <EditorContext.Provider value={setEditor}>
@@ -119,26 +171,84 @@ export default function Writer() {
             onSubmit={handleSubmit(onSubmit)}
             className="flex justify-between"
           >
-            <label className="w-full input shadow flex items-center gap-2 mb-2">
-              <span className="font-bold">제목</span>
-              <input
-                autoComplete="off"
-                type="text"
-                {...register("title", { required: true })}
-                className={`grow ${
-                  errors.title && "input-bordered input-error"
-                }`}
-              />
-            </label>
-            <button
-              type="submit"
-              className="w-24 h-12 ml-2 rounded-btn shadow hover:bg-primary hover:text-white px-4 py-2 transition-all active:scale-95"
-            >
-              올리기
-            </button>
+            <div className="w-full desktop:flex desktop:gap-2 mb-2">
+              <select
+                {...register("category", { required: true })}
+                className="select shadow"
+                disabled={category === undefined && true}
+                onChange={onCategoryChange}
+              >
+                {category !== undefined ? (
+                  <>
+                    {category !== null ? (
+                      <>
+                        <option value="">선택해주세요</option>
+                        <option value="create-category">카테고리 만들기</option>
+                        {category.map((category) => (
+                          <option key={category.id} value={category.id}>
+                            {category.category}
+                          </option>
+                        ))}
+                      </>
+                    ) : (
+                      <>
+                        <option value="create-category">카테고리 만들기</option>
+                      </>
+                    )}
+                  </>
+                ) : (
+                  <>
+                    <option>로딩중...</option>
+                  </>
+                )}
+              </select>
+              <label className="w-full input shadow flex items-center gap-2">
+                <span className="font-bold w-8">제목</span>
+                <input
+                  autoComplete="off"
+                  type="text"
+                  {...register("title", { required: true })}
+                  className={`w-full ${
+                    errors.title && "input-bordered input-error"
+                  }`}
+                />
+              </label>
+              <button
+                type="submit"
+                className="w-24 h-12 rounded-btn shadow hover:bg-primary hover:text-white px-4 py-2 transition-all active:scale-95"
+              >
+                올리기
+              </button>
+            </div>
           </form>
           <Editor />
         </div>
+        <dialog ref={createCategoryModalRef} className="modal">
+          <div className="modal-box">
+            <h3 className="font-bold text-lg">카테고리 만들기</h3>
+            <div className="flex flex-col gap-2">
+              <span>카테고리 이름을 입력해줘.</span>
+              <input
+                type="text"
+                className="input input-bordered input-sm focus:outline-none"
+                onChange={(e) => setNewCategoryName(e.target.value)}
+              />
+            </div>
+            <div className="modal-action">
+              <form method="dialog">
+                <div className="flex gap-2">
+                  <button
+                    className="btn btn-primary"
+                    onClick={createCategoryFromServer}
+                  >
+                    확인
+                  </button>
+                  <button className="btn">취소</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </dialog>
         <DialogModalTwoButton
           title={"포스트하기"}
           body={"내가 쓴 글을 이제 모두에게 보여줄까?"}

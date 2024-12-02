@@ -38,4 +38,13 @@ model post {
   postUrl      String
   postAt       DateTime @default(now())
   author       profile @relation(fields: [userId], references: [userId])
+  category     category @relation(fields: [categoryId], references: [id])
+  categoryId   Int
+}
+
+model category {
+  id           Int    @id @default(autoincrement())
+  category     String
+  owner        String?
+  posts        post[]
 }

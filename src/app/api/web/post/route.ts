@@ -24,6 +24,7 @@ export async function POST(req: NextRequest) {
   if (!userId) return sendApiError(401, "권한이 없어요!");
 
   const user = await prisma.profile.findUnique({ where: { userId: userId } });
+  if (!user) return sendApiError(403, "유저 테이블에 유저가 없어요!");
   const postDate = new Date().toLocaleString("ko-KR", {
     timeZone: "Asia/Seoul",
   });
@@ -31,8 +32,9 @@ export async function POST(req: NextRequest) {
   const fileName = crypto.randomUUID();
   const markdownWithMetadata = `---
 title: ${data.title}
+userId: ${userId}
 author: ${user?.nickname}
-avatarUrl: ${user?.avatarUrl}
+category: ${data.category.category}
 postDate: ${postDate}
 ---
 
@@ -62,6 +64,7 @@ ${data.body}
       postUrl: postAddress,
       title: data.title,
       userId: userId,
+      categoryId: data.category.id,
     },
   });
 
