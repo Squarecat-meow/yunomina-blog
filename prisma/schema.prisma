@@ -27,6 +27,7 @@ model profile {
   avatarUrl    String?
   sentences    String?
   introduce    String?
+  ownedCategory category[]
   user         user    @relation(fields: [userId], references: [userId])
   post         post[]
 }
@@ -45,6 +46,7 @@ model post {
 model category {
   id           Int    @id @default(autoincrement())
   category     String
-  owner        String?
+  ownerId      Int
+  owner        profile?  @relation(fields: [ownerId], references: [id])
   posts        post[]
 }

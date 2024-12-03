@@ -22,9 +22,9 @@ export async function getCategory() {
   return category;
 }
 
-export async function createCategory(category: string) {
+export async function createCategory(category: string, owner: number) {
   const createdCategory = await prisma.category.create({
-    data: { category: category },
+    data: { category: category, ownerId: owner },
   });
 
   return createdCategory;

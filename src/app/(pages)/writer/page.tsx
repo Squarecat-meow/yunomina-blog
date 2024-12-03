@@ -25,7 +25,8 @@ import {
   getCategory,
   uploadToS3,
 } from "./_components/actions/action";
-import { category } from "@prisma/client";
+import { category, post, profile } from "@prisma/client";
+import { useRouter } from "next/navigation";
 
 type postType = {
   title: string;
@@ -44,9 +45,10 @@ export default function Writer() {
   const [postCategory, setPostCategory] = useState<category>({
     category: "",
     id: 0,
-    owner: "",
+    ownerId: 0,
   });
   const [newCategoryName, setNewCategoryName] = useState<string>("");
+  const [postData, setPostData] = useState<post>();
 
   const postConfirmModalRef = useRef<HTMLDialogElement>(null);
   const postSuccessModalRef = useRef<HTMLDialogElement>(null);
@@ -59,6 +61,8 @@ export default function Writer() {
     trigger,
     setValue,
   } = useForm<postType>({ mode: "onBlur" });
+
+  const router = useRouter();
 
   const handlePost = async () => {
     try {
@@ -119,6 +123,8 @@ export default function Writer() {
           body: JSON.stringify(payload),
         });
         if (!res.ok) alert(await res.text());
+        const data = (await res.json()) as post;
+        setPostData(data);
         setLoading(false);
       }
     } catch (err) {
@@ -143,7 +149,9 @@ export default function Writer() {
         const filteredCategory = category?.find(
           (el) => el.id === parseInt(e.target.value)
         );
-        setPostCategory(filteredCategory ?? { category: "", id: 0, owner: "" });
+        setPostCategory(
+          filteredCategory ?? { category: "", id: 0, ownerId: 0 }
+        );
         break;
     }
   };
@@ -154,7 +162,13 @@ export default function Writer() {
   }, []);
 
   const createCategoryFromServer = useCallback(async () => {
-    const newCategory = await createCategory(newCategoryName);
+    const localProfile = localStorage.getItem("profile");
+    if (!localProfile) {
+      throw new Error("로컬 프로필이 없어요!");
+    }
+    const profile = JSON.parse(localProfile) as profile;
+
+    const newCategory = await createCategory(newCategoryName, profile.id ?? 0);
     setCategory((prevCategory) => [...(prevCategory || []), newCategory]);
     setValue("category", newCategory.category);
   }, [newCategoryName, setValue]);
@@ -264,6 +278,7 @@ export default function Writer() {
           body_loading={"포스트하고 있어. 잠시만 기다려줘!"}
           body_done={"포스트 끝! 이제 내 글을 많은 사람들이 볼 수 있어!"}
           loadingButtonText={"로딩중..."}
+          onClick={() => router.push("/posts")}
           doneButtonText={"확인"}
           ref={postSuccessModalRef}
         />
