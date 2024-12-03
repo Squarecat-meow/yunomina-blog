@@ -2,16 +2,7 @@
 
 import DialogModalLoadingOneButton from "@/app/_components/modalLoadingOneButton";
 import DialogModalTwoButton from "@/app/_components/modalTwoButton";
-import {
-  ChangeEvent,
-  createContext,
-  Dispatch,
-  SetStateAction,
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import { ChangeEvent, useCallback, useEffect, useRef, useState } from "react";
 import { $convertToMarkdownString, TRANSFORMERS } from "@lexical/markdown";
 import { LexicalEditor } from "lexical";
 import Editor from "./_components/editor";
@@ -25,17 +16,14 @@ import {
   getCategory,
   uploadToS3,
 } from "./_components/actions/action";
-import { category, post, profile } from "@prisma/client";
+import { category, profile } from "@prisma/client";
 import { useRouter } from "next/navigation";
+import { EditorContext } from "@/app/_context/contextProvider";
 
 type postType = {
   title: string;
   category: string;
 };
-
-export const EditorContext = createContext<Dispatch<
-  SetStateAction<LexicalEditor | null>
-> | null>(null);
 
 export default function Writer() {
   const [loading, setLoading] = useState(false);

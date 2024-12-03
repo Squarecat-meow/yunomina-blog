@@ -71,7 +71,7 @@ import { $isAtNodeEnd } from "@lexical/selection";
 import { $isLinkNode } from "@lexical/link";
 import { blockTypeToBlockName } from "./utils/toolbarUtils";
 import EditorCodeDropdown from "./components/codeDropdown";
-import { EditorContext } from "../page";
+import { EditorContext } from "@/app/_context/contextProvider";
 import { InsertImageDialog } from "./plugins/imagePlugin";
 
 export type DropdownType = {
