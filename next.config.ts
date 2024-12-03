@@ -11,6 +11,11 @@ const nextConfig: NextConfig = {
         hostname: "yunomina-blog.s3.us-east-005.backblazeb2.com",
         port: "",
       },
+      {
+        protocol: "https",
+        hostname: "yuno.mina.house",
+        port: "",
+      },
     ],
   },
   experimental: {
