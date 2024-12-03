@@ -1,6 +1,8 @@
 import { GetPrismaClient } from "@/utils/getPrismaClient/getPrismaClient";
 import PostComponent from "./_postComponent";
 
+export const dynamic = "force-dynamic";
+
 export default async function Posts() {
   const prisma = GetPrismaClient.getClient();
   const posts = await prisma.post.findMany({

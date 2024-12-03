@@ -2,6 +2,8 @@ import { GetPrismaClient } from "@/utils/getPrismaClient/getPrismaClient";
 import { FavoriteFilled } from "@carbon/icons-react";
 import Image from "next/image";
 
+export const dynamic = "force-dynamic";
+
 const prisma = GetPrismaClient.getClient();
 const fetchProfile = async (userId: string) => {
   const userProfile = await prisma.profile.findUnique({
