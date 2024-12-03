@@ -48,7 +48,6 @@ export default function Writer() {
     ownerId: 0,
   });
   const [newCategoryName, setNewCategoryName] = useState<string>("");
-  const [postData, setPostData] = useState<post>();
 
   const postConfirmModalRef = useRef<HTMLDialogElement>(null);
   const postSuccessModalRef = useRef<HTMLDialogElement>(null);
@@ -123,8 +122,6 @@ export default function Writer() {
           body: JSON.stringify(payload),
         });
         if (!res.ok) alert(await res.text());
-        const data = (await res.json()) as post;
-        setPostData(data);
         setLoading(false);
       }
     } catch (err) {
@@ -157,8 +154,13 @@ export default function Writer() {
   };
 
   const getCategoryFromServer = useCallback(async () => {
-    const gotCategory = await getCategory();
-    setCategory(gotCategory);
+    const localProfile = localStorage.getItem("profile");
+    if (!localProfile) {
+      throw new Error("로컬 프로필이 없어요!");
+    }
+    const profile = JSON.parse(localProfile) as profile;
+    const [gotCategory] = await getCategory(profile.id);
+    setCategory(gotCategory.ownedCategory);
   }, []);
 
   const createCategoryFromServer = useCallback(async () => {

@@ -16,8 +16,15 @@ export async function uploadToS3(blob: Blob) {
   return res;
 }
 
-export async function getCategory() {
-  const category = await prisma.category.findMany();
+export async function getCategory(id: number) {
+  const category = await prisma.profile.findMany({
+    where: {
+      id: id,
+    },
+    select: {
+      ownedCategory: true,
+    },
+  });
 
   return category;
 }

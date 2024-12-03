@@ -1,12 +1,14 @@
 "use client";
 
-import { category } from "@prisma/client";
+import { category, profile } from "@prisma/client";
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 import getCategories from "../_actions/action";
 
 export default function PostsList() {
-  const [categories, setCategories] = useState<category[] | null>();
+  const [categories, setCategories] = useState<
+    ({ ownedCategory: category[] } & profile)[] | null
+  >();
 
   const fetchCategories = useCallback(async () => {
     const gotCategories = await getCategories();
@@ -23,16 +25,39 @@ export default function PostsList() {
       <li className="desktop:hidden menu_item">
         <Link href={"/posts"}>Posts Top</Link>
       </li>
-      {categories?.map((category, key) => (
-        <li key={key}>
-          <a>{category.owner}</a>
-          <ul>
+      {categories !== undefined ? (
+        <>
+          {categories !== null ? (
+            <>
+              {categories.map((owner) => (
+                <li key={owner.id}>
+                  <a>{owner.nickname}</a>
+                  <ul>
+                    {owner.ownedCategory.map((category) => (
+                      <Link
+                        href={`/posts/category/${category.id}`}
+                        key={category.id}
+                      >
+                        <li>
+                          <span>{category.category}</span>
+                        </li>
+                      </Link>
+                    ))}
+                  </ul>
+                </li>
+              ))}
+            </>
+          ) : (
             <li>
-              <a>{category.category}</a>
+              <a>카테고리가 없어요!</a>
             </li>
-          </ul>
+          )}
+        </>
+      ) : (
+        <li>
+          <a>로딩중...</a>
         </li>
-      ))}
+      )}
     </>
   );
 }
