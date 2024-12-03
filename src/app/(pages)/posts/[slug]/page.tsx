@@ -6,13 +6,11 @@ import { compileMDX } from "next-mdx-remote/rsc";
 import Image from "next/image";
 import Link from "next/link";
 
-type PageProps = {
-  params: {
-    slug: string;
-  };
-};
-
-export default async function Post({ params }: PageProps) {
+export default async function Post({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
   const prisma = GetPrismaClient.getClient();
   const { slug } = await params;
   const postUrl = await prisma.post.findUnique({

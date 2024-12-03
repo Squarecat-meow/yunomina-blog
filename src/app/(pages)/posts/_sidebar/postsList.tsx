@@ -22,8 +22,8 @@ export default function PostsList() {
 
   return (
     <>
-      <li className="desktop:hidden menu_item">
-        <Link href={"/posts"}>Posts Top</Link>
+      <li className="menu_item">
+        <Link href={"/posts"}>Posts</Link>
       </li>
       {categories !== undefined ? (
         <>

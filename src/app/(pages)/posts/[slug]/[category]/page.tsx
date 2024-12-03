@@ -6,7 +6,7 @@ const prisma = GetPrismaClient.getClient();
 export default async function CategoryPage({
   params,
 }: {
-  params: { category: string };
+  params: Promise<{ category: string }>;
 }) {
   const { category } = await params;
   const postByCategory = await prisma.post.findMany({
@@ -22,9 +22,9 @@ export default async function CategoryPage({
   return (
     <div className="w-full p-2">
       {postByCategory.map((post) => (
-        <>
-          <PostComponent posts={post} key={post.id} />
-        </>
+        <div key={post.id}>
+          <PostComponent posts={post} />
+        </div>
       ))}
     </div>
   );
