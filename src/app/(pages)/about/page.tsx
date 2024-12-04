@@ -44,7 +44,7 @@ export default async function About() {
             </div>
           )}
           <span className="italic font-thin">{yunochiProfile?.sentences}</span>
-          <span className="text-xl desktop:text-3xl font-bold">
+          <span className="text-xl desktop:text-3xl font-bold break-keep">
             저는 {yunochiProfile?.nickname}에요.
           </span>
           <p className="text-sm desktop:text-lg whitespace-pre-line">
@@ -72,7 +72,7 @@ export default async function About() {
             </div>
           )}
           <span className="italic font-thin">{yozuminaProfile?.sentences}</span>
-          <span className="text-xl desktop:text-3xl font-bold">
+          <span className="text-xl desktop:text-3xl font-bold break-keep">
             저는 {yozuminaProfile?.nickname}에요.
           </span>
           <p className="text-sm desktop:text-lg whitespace-pre-line">
