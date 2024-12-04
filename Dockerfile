@@ -29,15 +29,14 @@ ENV NODE_ENV=production
 # 텔레메트리 안 보내기
 ENV NEXT_TELEMETRY_DISABLED=1
 
-ENV DATABASE_URL=${DATABASE_URL}
-
 # 유저그룹 & 유저 추가
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
 COPY --from=builder --chown=nextjs:nodejs /app/public ./public
 COPY --from=builder --chown=nextjs:nodejs /app/node_modules ./node_modules
-COPY --from=builder --chown=nextjs:nodejs /app/.next ./.next
+COPY --from=builder --chown=nextjs:nodejs /app/.next ./.nextjs
+COPY --from=builder --chown=nextjs:nodejs /app/next.config.ts .
 COPY --chown=nextjs:nodejs package.json .
 COPY --chown=nextjs:nodejs package-lock.json .
 COPY --chown=nextjs:nodejs prisma ./prisma
