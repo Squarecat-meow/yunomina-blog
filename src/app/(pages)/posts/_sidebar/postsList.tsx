@@ -31,7 +31,9 @@ export default function PostsList() {
             <>
               {categories.map((owner) => (
                 <li key={owner.id}>
-                  <a>{owner.nickname}</a>
+                  <Link href={`/posts/category/${owner.userId}`}>
+                    <span>{owner.nickname}</span>
+                  </Link>
                   <ul>
                     {owner.ownedCategory.map((category) => (
                       <Link
