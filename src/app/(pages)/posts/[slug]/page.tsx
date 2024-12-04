@@ -3,8 +3,10 @@ import NotFound from "@/app/not-found";
 import { GetPrismaClient } from "@/utils/getPrismaClient/getPrismaClient";
 import { ChevronLeft, ChevronRight } from "@carbon/icons-react";
 import { compileMDX } from "next-mdx-remote/rsc";
+import remarkGfm from "remark-gfm";
 import Image from "next/image";
 import Link from "next/link";
+import rehypePrettyCode from "rehype-pretty-code";
 
 export default async function Post({
   params,
@@ -25,6 +27,17 @@ export default async function Post({
     source: markdown,
     options: {
       parseFrontmatter: true,
+      mdxOptions: {
+        remarkPlugins: [remarkGfm],
+        rehypePlugins: [
+          [
+            rehypePrettyCode,
+            {
+              theme: "one-dark-pro",
+            },
+          ],
+        ],
+      },
     },
   });
 
