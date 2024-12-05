@@ -44,7 +44,7 @@ export default async function CategoryPage({
   }
 
   return (
-    <div className="w-full p-2">
+    <div className="desktop:grid desktop:grid-cols-2 p-2">
       {posts.map((post) => (
         <div key={post.id}>
           <PostComponent posts={post} />

@@ -10,7 +10,7 @@ export default function PostsLayout({
           <PostsSidebar />
         </ul>
       </div>
-      {children}
+      <div className="w-full flex justify-center">{children}</div>
     </div>
   );
 }
