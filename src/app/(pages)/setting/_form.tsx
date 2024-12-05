@@ -1,9 +1,6 @@
 "use client";
 
-import {
-  ProfileWithAvatarDto,
-  ProfileWithoutAvatarDto,
-} from "@/app/_dto/profile.dto";
+import { ProfileDto } from "@/app/_dto/profile.dto";
 import { Camera } from "@carbon/icons-react";
 import Image from "next/image";
 import {
@@ -17,7 +14,7 @@ import {
 import { useForm } from "react-hook-form";
 
 type FormValue = {
-  profile: ProfileWithoutAvatarDto;
+  profile: ProfileDto;
   avatar: string | null;
   setAvatar: Dispatch<SetStateAction<string | null>>;
   setLoading: Dispatch<SetStateAction<boolean>>;
@@ -45,7 +42,7 @@ export default function SettingForm({
   setLoading,
   refs: [fileInputRef, avatarCropModal, profileUpdateCompleteModalRef],
 }: FormValue) {
-  const { register, handleSubmit, reset } = useForm<ProfileWithoutAvatarDto>({
+  const { register, handleSubmit, reset } = useForm<ProfileDto>({
     mode: "onBlur",
     defaultValues: useMemo(() => {
       return profile;
@@ -71,76 +68,47 @@ export default function SettingForm({
     avatarCropModal.current.showModal();
   };
 
-  const onSubmit = async (data: ProfileWithoutAvatarDto) => {
+  const onSubmit = async (data: ProfileDto) => {
     setLoading(true);
     profileUpdateCompleteModalRef.current?.showModal();
     const formData = new FormData();
+    let blob: Blob | null = null;
     try {
       if (profile) {
         if (avatar) {
           // 아바타 사진을 블롭으로 바꿈
-          const blob = await fetch(avatar).then((r) => r.blob());
-          // 멀티파트 폼 데이터로 변환
-          const newData = destructFormValue(data);
-          formData.append("avatar", blob);
-          formData.append("userId", profile?.userId);
-          for (const k in newData) {
-            formData.append(k, newData[k]);
-          }
-          const res = await fetch("/api/web/setting", {
-            method: "POST",
-            body: formData,
-          });
-          if (!res.ok) {
-            throw new Error(`저장하는데 실패했어요! ${await res.text()}`);
-          }
-
-          const result = await res.json();
-          const updatedProfileWithAvatar: ProfileWithAvatarDto = {
-            ...data,
-            avatarUrl: result.avatarUrl,
-          };
-          localStorage.setItem(
-            "profile",
-            JSON.stringify(updatedProfileWithAvatar)
-          );
-          window.dispatchEvent(
-            new CustomEvent("profile", {
-              bubbles: true,
-            })
-          );
-          setLoading(false);
-        } else {
-          // 멀티파트 폼 데이터로 변환
-          const newData = destructFormValue(data);
-          formData.append("avatar", "");
-          formData.append("userId", profile?.userId);
-          for (const k in newData) {
-            formData.append(k, newData[k]);
-          }
-          const res = await fetch("/api/web/setting", {
-            method: "POST",
-            body: formData,
-          });
-          if (!res.ok) {
-            throw new Error(`저장하는데 실패했어요! ${await res.text()}`);
-          }
-          const updatedProfileWithoutAvatar: ProfileWithAvatarDto = {
-            ...data,
-            avatarUrl: null,
-          };
-
-          localStorage.setItem(
-            "profile",
-            JSON.stringify(updatedProfileWithoutAvatar)
-          );
-          window.dispatchEvent(
-            new CustomEvent("profile", {
-              bubbles: true,
-            })
-          );
-          setLoading(false);
+          blob = await fetch(avatar).then((r) => r.blob());
         }
+        // 멀티파트 폼 데이터로 변환
+        const newData = destructFormValue(data);
+        formData.append("avatar", blob ?? "");
+        formData.append("userId", profile?.userId);
+        for (const k in newData) {
+          formData.append(k, newData[k]);
+        }
+        const res = await fetch("/api/web/setting", {
+          method: "POST",
+          body: formData,
+        });
+        if (!res.ok) {
+          throw new Error(`저장하는데 실패했어요! ${await res.text()}`);
+        }
+
+        const result = await res.json();
+        const updatedProfileWithAvatar: ProfileDto = {
+          ...data,
+          avatarUrl: result.avatarUrl ?? null,
+        };
+        localStorage.setItem(
+          "profile",
+          JSON.stringify(updatedProfileWithAvatar)
+        );
+        window.dispatchEvent(
+          new CustomEvent("profile", {
+            bubbles: true,
+          })
+        );
+        setLoading(false);
       } else {
         throw new Error("LocalStorage에 프로필이 없어요!");
       }
