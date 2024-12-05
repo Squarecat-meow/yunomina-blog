@@ -104,10 +104,12 @@ export default async function Post({
           {prevPost[0] ? (
             <div className="flex flex-col rounded-box px-4 py-2 hover:shadow transition-shadow">
               <Link href={`/posts/${prevPost[0].id}`} className="no-underline">
-                <span className="text-sm w-full flex justify-end">이전 글</span>
+                <span className="text-xs desktop:text-sm w-full flex justify-end">
+                  이전 글
+                </span>
                 <div className="flex items-center gap-2">
                   <ChevronLeft size={24} />
-                  <span className="text-2xl font-bold">
+                  <span className="text-lg desktop:text-xl font-bold break-keep text-right">
                     {prevPost[0].title}
                   </span>
                 </div>
@@ -119,9 +121,11 @@ export default async function Post({
           {nextPost[0] && (
             <div className="flex flex-col rounded-box px-6 py-2 hover:shadow transition-shadow">
               <Link href={`/posts/${nextPost[0].id}`} className="no-underline">
-                <span className="text-sm w-full flex">다음 글</span>
+                <span className="text-xs desktop:text-sm w-full flex">
+                  다음 글
+                </span>
                 <div className="flex items-center gap-2">
-                  <span className="text-2xl font-bold">
+                  <span className="text-lg desktop:text-xl font-bold break-keep">
                     {nextPost[0].title}
                   </span>
                   <ChevronRight size={24} />
