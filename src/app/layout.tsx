@@ -28,6 +28,14 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        <script
+          defer
+          data-domain={process.env.WEB_URL}
+          data-api="https://blog-plausible.kw7551.workers.dev/blog-api/event"
+          src="https://blog-plausible.kw7551.workers.dev/blog-javascript/script.js"
+        ></script>
+      </head>
       <body
         className={`${Pretendard.variable} ${IBMMono.variable} font-[family-name:var(--font-pretendard-variable)] antialiased flex flex-col items-center p-2 desktop:p-6`}
       >
