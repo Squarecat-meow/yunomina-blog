@@ -31,9 +31,8 @@ export default function RootLayout({
       <head>
         <script
           defer
-          data-domain={process.env.WEB_URL}
-          data-api="https://blog-plausible.kw7551.workers.dev/blog-api/event"
-          src="https://blog-plausible.kw7551.workers.dev/blog-javascript/script.js"
+          data-domain="yuno.mina.house"
+          src="https://plausible.mina.house/js/script.js"
         ></script>
       </head>
       <body
