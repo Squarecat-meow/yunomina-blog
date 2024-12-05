@@ -101,7 +101,7 @@ export default function Header() {
         </div>
       </div>
       <div className="flex items-center gap-12">
-        <Image src={headerImage} alt="header yunomina" />
+        <Image src={headerImage} alt="header yunomina" unoptimized />
         <div className="hidden desktop:flex flex-col desktop:flex-row items-center">
           <HeaderButton href="/">Home</HeaderButton>
           <HeaderButton href="/posts">Posts</HeaderButton>
