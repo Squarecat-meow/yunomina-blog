@@ -10,6 +10,15 @@ export default function PostComponent({
   return (
     <Link href={`/posts/${posts.id}`} key={posts.id}>
       <div className="card card-bordered min-w-[24rem] hover:shadow transition-shadow m-2">
+        {posts.thumbnail && (
+          <figure>
+            <img
+              src={posts.thumbnail}
+              alt="post thumbnail"
+              className="w-[24rem] h-[12rem] object-cover"
+            />
+          </figure>
+        )}
         <div className="card-body">
           <h2 className="card-title text-2xl font-bold">{posts.title}</h2>
           <div className="flex flex-col">

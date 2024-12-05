@@ -38,6 +38,7 @@ model post {
   title        String
   userId       String
   postUrl      String
+  thumbnail    String?
   postAt       DateTime @default(now())
   author       profile @relation(fields: [userId], references: [userId])
   category     category @relation(fields: [categoryId], references: [id])

@@ -20,6 +20,7 @@ export default async function CategoryPage({
           userId: "Yozumina",
         },
         include: { author: true, category: true },
+        orderBy: { id: "desc" },
       });
       break;
     case "yunochi":
@@ -28,7 +29,9 @@ export default async function CategoryPage({
           userId: "yunochi",
         },
         include: { author: true, category: true },
+        orderBy: { id: "desc" },
       });
+
       break;
     default:
       posts = await prisma.post.findMany({
@@ -39,6 +42,7 @@ export default async function CategoryPage({
           author: true,
           category: true,
         },
+        orderBy: { id: "desc" },
       });
       break;
   }

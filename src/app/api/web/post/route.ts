@@ -64,6 +64,7 @@ ${data.body}
       postUrl: postAddress,
       title: data.title,
       userId: userId,
+      thumbnail: data.thumbnail ? data.thumbnail : null,
       categoryId: data.category.id,
     },
   });
