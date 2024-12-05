@@ -64,8 +64,6 @@ import {
   $isCodeNode,
   CODE_LANGUAGE_FRIENDLY_NAME_MAP,
   CODE_LANGUAGE_MAP,
-  getCodeLanguages,
-  getDefaultCodeLanguage,
 } from "@lexical/code";
 import { $isAtNodeEnd } from "@lexical/selection";
 import { $isLinkNode } from "@lexical/link";
@@ -240,6 +238,21 @@ export default function ToolbarPlugin({
     }
   }, [activeEditor]);
 
+  // 코드 언어 가져오기
+  const onCodeLanguageSelect = useCallback(
+    (value: string) => {
+      activeEditor.update(() => {
+        if (selectedElementKey !== null) {
+          const node = $getNodeByKey(selectedElementKey);
+          if ($isCodeNode(node)) {
+            node.setLanguage(value);
+          }
+        }
+      });
+    },
+    [activeEditor, selectedElementKey]
+  );
+
   function getCodeLanguageOptions(): [string, string][] {
     const options: [string, string][] = [];
 
@@ -332,7 +345,10 @@ export default function ToolbarPlugin({
         <EditorDivider className={`hidden desktop:flex`} />
         {blockType === "code" ? (
           <>
-            <EditorCodeDropdown language={CODE_LANGUAGE_OPTIONS} />
+            <EditorCodeDropdown
+              language={CODE_LANGUAGE_OPTIONS}
+              onCodeChange={onCodeLanguageSelect}
+            />
           </>
         ) : (
           <>

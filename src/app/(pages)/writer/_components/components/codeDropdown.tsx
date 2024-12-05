@@ -1,9 +1,13 @@
-import { useRef, useState } from "react";
+"use client";
+
+import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 
 export default function EditorCodeDropdown({
   language,
+  onCodeChange,
 }: {
   language: [string, string][];
+  onCodeChange: (value: string) => void;
 }) {
   const dropdownRef = useRef<HTMLDetailsElement>(null);
   const [activeItem, setActiveItem] = useState<string>(language[6][1]);
@@ -21,6 +25,7 @@ export default function EditorCodeDropdown({
                 <a
                   onClick={() => {
                     setActiveItem(codeName);
+                    onCodeChange(value);
                     if (dropdownRef.current) dropdownRef.current.open = false;
                   }}
                 >
