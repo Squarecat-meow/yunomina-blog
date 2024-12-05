@@ -9,20 +9,20 @@ export default function PostComponent({
 }) {
   return (
     <Link href={`/posts/${posts.id}`} key={posts.id}>
-      <div className="w-full my-2 p-4 border space-y-2 border-base-200 rounded-box hover:shadow transition-shadow">
+      <div className="w-full my-2 px-4 py-2 border border-base-200 rounded-box hover:shadow transition-shadow">
         <h1 className="text-2xl font-bold">{posts.title}</h1>
         <div className="flex items-center gap-2">
           <Image
             src={posts.author.avatarUrl ?? ""}
-            width={30}
-            height={30}
+            width={24}
+            height={24}
             alt="author avatar"
             className="rounded-full"
           />
-          <span className="text-xl">{posts.author.nickname}</span>
+          <span className="text-lg font-light">{posts.author.nickname}</span>
         </div>
-        <div className="flex items-center gap-4">
-          <h2 className="text-sm">
+        <div className="flex items-center gap-2">
+          <h2 className="text-sm text-slate-400">
             {posts.postAt.toLocaleString("ko-KR", {
               timeZone: "Asia/Seoul",
             })}
