@@ -7,13 +7,43 @@ import remarkGfm from "remark-gfm";
 import Image from "next/image";
 import Link from "next/link";
 import rehypePrettyCode from "rehype-pretty-code";
+import { Metadata } from "next";
+
+const prisma = GetPrismaClient.getClient();
+
+export async function generateMetadata({
+  params,
+}: {
+  params: { slug: string };
+}): Promise<Metadata> {
+  const slug = (await params).slug;
+
+  const post = await prisma.post.findUniqueOrThrow({
+    where: {
+      id: parseInt(slug),
+    },
+  });
+
+  return {
+    title: post.title,
+    icons: "/favicon.ico",
+    openGraph: {
+      title: post.title,
+      url: `${process.env.WEB_URL}/posts/${slug}`,
+      siteName: "놋치미나의 아늑한 집",
+      type: "article",
+      authors: post.userId,
+      locale: "ko_KR",
+      ...(post.thumbnail && { images: post.thumbnail }),
+    },
+  };
+}
 
 export default async function Post({
   params,
 }: {
   params: Promise<{ slug: string }>;
 }) {
-  const prisma = GetPrismaClient.getClient();
   const { slug } = await params;
   const postUrl = await prisma.post.findUnique({
     where: { id: parseInt(slug) },
