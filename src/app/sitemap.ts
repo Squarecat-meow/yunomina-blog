@@ -3,6 +3,8 @@ import { MetadataRoute } from "next";
 
 const prisma = GetPrismaClient.getClient();
 
+export const dynamic = "force-dynamic";
+
 export default async function sitemap({
   id,
 }: {
