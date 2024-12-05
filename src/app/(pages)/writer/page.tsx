@@ -60,6 +60,16 @@ export default function Writer() {
         editor.update(() => {
           markdown = $convertToMarkdownString([IMAGE, ...TRANSFORMERS]);
         });
+        let payload: PostDto = {
+          title: "",
+          category: {
+            category: "",
+            id: 0,
+            ownerId: 0,
+          },
+          author: "",
+          body: "",
+        };
         const regex = new RegExp(/(?:blob)[^)]*/gm);
         const imageUrls = [...markdown.matchAll(regex)].flat();
 
@@ -88,29 +98,53 @@ export default function Writer() {
           for (const data in bucketImages) {
             markdown = markdown.replace(/(?:blob)[^)]*/m, bucketImages[data]);
           }
-        }
 
-        const jwtToken = await getCookie("jwtToken");
-        if (!jwtToken) {
-          throw new Error("토큰을 가져오는데 실패했어요!");
-        }
-        const userId = await checkAuth(jwtToken.value);
-        if (!userId) {
-          throw new Error("쿠키를 검증하는데 실패했어요!");
-        }
-        const payload: PostDto = {
-          title: title,
-          category: postCategory,
-          author: userId,
-          body: markdown ?? "",
-        };
+          const jwtToken = await getCookie("jwtToken");
+          if (!jwtToken) {
+            throw new Error("토큰을 가져오는데 실패했어요!");
+          }
+          const userId = await checkAuth(jwtToken.value);
+          if (!userId) {
+            throw new Error("쿠키를 검증하는데 실패했어요!");
+          }
 
-        const res = await fetch("/api/web/post", {
-          method: "POST",
-          body: JSON.stringify(payload),
-        });
-        if (!res.ok) alert(await res.text());
-        setLoading(false);
+          payload = {
+            title: title,
+            category: postCategory,
+            author: userId,
+            thumbnail: bucketImages[0],
+            body: markdown ?? "",
+          };
+
+          const fetchRes = await fetch("/api/web/post", {
+            method: "POST",
+            body: JSON.stringify(payload),
+          });
+          if (!fetchRes.ok) alert(await fetchRes.text());
+          setLoading(false);
+        } else {
+          const jwtToken = await getCookie("jwtToken");
+          if (!jwtToken) {
+            throw new Error("토큰을 가져오는데 실패했어요!");
+          }
+          const userId = await checkAuth(jwtToken.value);
+          if (!userId) {
+            throw new Error("쿠키를 검증하는데 실패했어요!");
+          }
+          payload = {
+            title: title,
+            category: postCategory,
+            author: userId,
+            body: markdown ?? "",
+          };
+
+          const res = await fetch("/api/web/post", {
+            method: "POST",
+            body: JSON.stringify(payload),
+          });
+          if (!res.ok) alert(await res.text());
+          setLoading(false);
+        }
       }
     } catch (err) {
       alert(err);

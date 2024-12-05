@@ -72,8 +72,8 @@ export default async function Post({
   });
 
   return (
-    <div className="w-full desktop:w-[80%] flex justify-center prose">
-      <div className="w-full desktop:w-2/3">
+    <div className="w-full desktop:w-2/3 flex justify-center prose">
+      <div className="w-full">
         <div className="flex flex-col justify-center p-4">
           <h1 className="text-5xl mb-2 break-keep">{frontmatter.title}</h1>
           <div className="flex items-center mb-2">

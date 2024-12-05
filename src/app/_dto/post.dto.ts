@@ -4,6 +4,7 @@ export interface PostDto {
   title: string;
   category: category;
   author: string;
+  thumbnail?: string;
   body: string;
 }
 
