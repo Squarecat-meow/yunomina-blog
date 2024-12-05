@@ -9,7 +9,7 @@ export default function PostComponent({
 }) {
   return (
     <Link href={`/posts/${posts.id}`} key={posts.id}>
-      <div className="card card-bordered min-w-[24rem] hover:shadow transition-shadow m-2">
+      <div className="card card-bordered hover:shadow transition-shadow my-2 desktop:m-2">
         {posts.thumbnail && (
           <figure>
             <img

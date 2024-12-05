@@ -68,7 +68,7 @@ export default function Header() {
   }, []);
 
   return (
-    <div className="w-full desktop:w-[90%] h-12 flex justify-between items-center p-6">
+    <div className="w-full desktop:w-[90%] h-12 flex justify-between items-center p-2">
       <div className="drawer w-fit desktop:hidden z-10">
         <input id="menu_drawer" type="checkbox" className="drawer-toggle" />
         <div className="drawer-content">

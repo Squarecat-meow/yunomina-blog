@@ -11,7 +11,7 @@ export default async function Posts() {
   });
 
   return (
-    <div className="desktop:grid desktop:grid-cols-2 p-2">
+    <div className="desktop:grid desktop:grid-cols-2">
       {posts.length !== 0 ? (
         <>
           {posts.map((post) => (
