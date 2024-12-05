@@ -1,4 +1,6 @@
 import type { Config } from "tailwindcss";
+import daisyui from "daisyui";
+import typography from "@tailwindcss/typography";
 
 export default {
   content: [
@@ -7,12 +9,23 @@ export default {
     "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   theme: {
+    screens: {
+      desktop: "1280px",
+      window: "680px",
+    },
     extend: {
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",
       },
+      typography: {
+        DEFAULT: {
+          css: {
+            maxWidth: "100vw",
+          },
+        },
+      },
     },
   },
-  plugins: [],
+  plugins: [daisyui, typography],
 } satisfies Config;

@@ -19,6 +19,7 @@
 
 # production
 /build
+docker-compose.yml
 
 # misc
 .DS_Store
@@ -30,6 +31,7 @@ yarn-debug.log*
 yarn-error.log*
 
 # env files (can opt-in for committing if needed)
+docker.env
 .env*
 
 # vercel
