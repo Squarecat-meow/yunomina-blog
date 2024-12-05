@@ -1,11 +1,11 @@
 "use server";
 
-import { ProfileWithAvatarDto } from "@/app/_dto/profile.dto";
+import { ProfileDto } from "@/app/_dto/profile.dto";
 import { GetPrismaClient } from "@/utils/getPrismaClient/getPrismaClient";
 
 export async function fetchProfile(
   userId: string
-): Promise<ProfileWithAvatarDto | undefined> {
+): Promise<ProfileDto | undefined> {
   const prisma = GetPrismaClient.getClient();
 
   try {

@@ -8,14 +8,12 @@ import { useEffect, useRef, useState } from "react";
 import LoggedinIcons from "./components/loggedInIcons";
 import { purgeCookies } from "./action";
 import { useRouter } from "next/navigation";
-import { ProfileWithAvatarDto } from "../_dto/profile.dto";
+import { ProfileDto } from "../_dto/profile.dto";
 import headerImage from "../../../public/header-image.gif";
 import Image from "next/image";
 
 export default function Header() {
-  const [profile, setProfile] = useState<
-    ProfileWithAvatarDto | null | undefined
-  >();
+  const [profile, setProfile] = useState<ProfileDto | null | undefined>();
   const logoutModalRef = useRef<HTMLDialogElement>(null);
 
   const router = useRouter();
@@ -113,7 +111,7 @@ export default function Header() {
           {profile !== null ? (
             <>
               <LoggedinIcons
-                avatarUrl={profile.avatarUrl}
+                avatarUrl={profile.avatarUrl ?? ""}
                 nickname={profile.nickname ? profile.nickname : profile.userId}
                 userId={profile.userId}
                 logoutModalRef={logoutModalRef.current}

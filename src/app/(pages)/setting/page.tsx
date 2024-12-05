@@ -3,12 +3,12 @@
 import { useEffect, useRef, useState } from "react";
 import AvatarCrop from "./_Avatar/page";
 import SettingForm from "./_form";
-import { ProfileWithoutAvatarDto } from "@/app/_dto/profile.dto";
+import { ProfileDto } from "@/app/_dto/profile.dto";
 
 export default function Setting() {
   const [avatar, setAvatar] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
-  const [profile, setProfile] = useState<ProfileWithoutAvatarDto>();
+  const [profile, setProfile] = useState<ProfileDto>();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const avatarCropModal = useRef<HTMLDialogElement>(null);
   const profileUpdateCompleteModalRef = useRef<HTMLDialogElement>(null);
