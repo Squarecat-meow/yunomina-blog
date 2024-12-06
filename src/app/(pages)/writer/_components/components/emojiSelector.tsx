@@ -3,11 +3,35 @@
 import { useCallback, useEffect, useState } from "react";
 import { emojis } from "@prisma/client";
 import { fetchEmojiArray } from "../actions/action";
+import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
+import { $createKeomojiNode } from "../nodes/keomojiNode";
+import { $getSelection, $isRangeSelection } from "lexical";
 
 export default function EmojiSelector() {
   const [emojiCategory, setEmojiCategory] = useState<
     Partial<Record<string, emojis[]>>
   >({});
+  const [editor] = useLexicalComposerContext();
+
+  const onEmojiClick = useCallback(
+    (url: string, name: string) => {
+      editor.update(() => {
+        const selection = $getSelection();
+
+        if (!$isRangeSelection(selection)) return;
+
+        selection.insertNodes([
+          $createKeomojiNode({
+            name: name,
+            src: url,
+            width: 28,
+            height: 28,
+          }),
+        ]);
+      });
+    },
+    [editor]
+  );
 
   const fetchEmoji = useCallback(async () => {
     const array = await fetchEmojiArray();
@@ -41,6 +65,7 @@ export default function EmojiSelector() {
                   <div
                     className="rounded-md hover:bg-base-200 active:scale-90 transition-all w-10 h-10 p-1"
                     key={val.id}
+                    onClick={() => onEmojiClick(val.url, val.name)}
                   >
                     <img src={val.url} alt={val.name} />
                   </div>

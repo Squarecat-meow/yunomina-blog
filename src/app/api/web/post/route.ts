@@ -77,7 +77,7 @@ ${data.body}
     },
   });
 
-  return NextResponse.json({ post }, { status: 200 });
+  return NextResponse.json({}, { status: 200 });
 }
 
 export async function DELETE(req: NextRequest) {

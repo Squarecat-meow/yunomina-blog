@@ -19,6 +19,7 @@ import {
 import { category, profile } from "@prisma/client";
 import { useRouter } from "next/navigation";
 import { EditorContext } from "@/app/_context/contextProvider";
+import { KEOMOJI } from "./_components/plugins/emojiPickerPlugin";
 
 type postType = {
   title: string;
@@ -58,7 +59,11 @@ export default function Writer() {
         postSuccessModalRef.current?.showModal();
         let markdown: string = "";
         editor.update(() => {
-          markdown = $convertToMarkdownString([IMAGE, ...TRANSFORMERS]);
+          markdown = $convertToMarkdownString([
+            KEOMOJI,
+            IMAGE,
+            ...TRANSFORMERS,
+          ]);
         });
         let payload: PostDto = {
           title: "",
@@ -70,7 +75,7 @@ export default function Writer() {
           author: "",
           body: "",
         };
-        const regex = new RegExp(/(?:blob)[^)]*/gm);
+        const regex = new RegExp(/(?:blob:http:)[^)]*/gm);
         const imageUrls = [...markdown.matchAll(regex)].flat();
 
         const fetchUrls = async (urls: string[]) => {

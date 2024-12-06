@@ -17,7 +17,7 @@ import {
 import ImagePlugin from "./plugins/imagePlugin";
 import { AutoLinkPlugin } from "@lexical/react/LexicalAutoLinkPlugin";
 import { MATCHERS } from "./utils/autoLinkMatchers";
-import EmojisPlugin from "./plugins/emojisPlugin";
+import EmojiPickerPlugin from "./plugins/emojiPickerPlugin";
 
 export default function Editor() {
   const [editor] = useLexicalComposerContext();
@@ -46,7 +46,7 @@ export default function Editor() {
         <ImagePlugin />
         <MarkdownShortcutPlugin transformers={DEFAULT_TRANSFORMERS} />
         <AutoLinkPlugin matchers={MATCHERS} />
-        <EmojisPlugin />
+        <EmojiPickerPlugin />
       </div>
     </div>
   );
