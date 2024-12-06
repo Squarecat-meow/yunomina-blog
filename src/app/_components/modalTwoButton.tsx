@@ -3,6 +3,7 @@ import { RefObject } from "react";
 type modalProps = {
   title: string;
   body: string;
+  confirmButtonColor: "btn-primary" | "btn-error";
   confirmButtonText: string;
   cancelButtonText: string;
   ref: RefObject<HTMLDialogElement>;
@@ -12,6 +13,7 @@ type modalProps = {
 export default function DialogModalTwoButton({
   title,
   body,
+  confirmButtonColor,
   confirmButtonText,
   cancelButtonText,
   ref,
@@ -26,7 +28,10 @@ export default function DialogModalTwoButton({
           <div className="modal-action">
             <form method="dialog">
               <div className="flex gap-2">
-                <button className="btn btn-primary" onClick={onClick}>
+                <button
+                  className={`btn ${confirmButtonColor}`}
+                  onClick={onClick}
+                >
                   {confirmButtonText}
                 </button>
                 <button className="btn">{cancelButtonText}</button>
