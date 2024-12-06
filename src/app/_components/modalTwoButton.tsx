@@ -3,7 +3,7 @@ import { RefObject } from "react";
 type modalProps = {
   title: string;
   body: string;
-  confirmButtonColor: "btn-primary" | "btn-error";
+  confirmButtonColor: "btn-primary" | "btn-error" | "btn-warning";
   confirmButtonText: string;
   cancelButtonText: string;
   ref: RefObject<HTMLDialogElement>;

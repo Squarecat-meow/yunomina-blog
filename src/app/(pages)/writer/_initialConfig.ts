@@ -4,6 +4,7 @@ import { CodeHighlightNode, CodeNode } from "@lexical/code";
 import { HorizontalRuleNode } from "@lexical/react/LexicalHorizontalRuleNode";
 import { AutoLinkNode, LinkNode } from "@lexical/link";
 import { ImageNode } from "./_components/nodes/imageNode";
+import { EmojiNode } from "./_components/nodes/emojiNode";
 
 const theme = {
   ltr: "ltr",
@@ -94,5 +95,6 @@ export const initialConfig = {
     ListItemNode,
     QuoteNode,
     ImageNode,
+    EmojiNode,
   ],
 };

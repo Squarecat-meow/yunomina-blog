@@ -204,7 +204,7 @@ export default function Writer() {
   return (
     <EditorContext.Provider value={setEditor}>
       <div className="w-full flex flex-col items-center">
-        <div className="w-full desktop:w-[60%] mb-4">
+        <div className="w-full desktop:w-[60%] mb-2">
           <form
             onSubmit={handleSubmit(onSubmit)}
             className="flex justify-between"

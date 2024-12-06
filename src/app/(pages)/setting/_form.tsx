@@ -10,6 +10,7 @@ import {
   SetStateAction,
   useEffect,
   useMemo,
+  useState,
 } from "react";
 import { useForm } from "react-hook-form";
 
@@ -18,11 +19,18 @@ type FormValue = {
   avatar: string | null;
   setAvatar: Dispatch<SetStateAction<string | null>>;
   setLoading: Dispatch<SetStateAction<boolean>>;
+  setAddress: Dispatch<SetStateAction<string | null>>;
   refs: [
     fileInputRef: RefObject<HTMLInputElement>,
     avatarCropModal: RefObject<HTMLDialogElement>,
-    profileUpdateCompleteModalRef: RefObject<HTMLDialogElement>
+    profileUpdateCompleteModalRef: RefObject<HTMLDialogElement>,
+    emojiImportModalRef: RefObject<HTMLDialogElement>
   ];
+  address: string | null;
+};
+
+type BlogSettingFormValue = {
+  MisskeyAddress: string | null;
 };
 
 function destructFormValue<T>(t: T) {
@@ -40,7 +48,14 @@ export default function SettingForm({
   avatar,
   setAvatar,
   setLoading,
-  refs: [fileInputRef, avatarCropModal, profileUpdateCompleteModalRef],
+  setAddress,
+  refs: [
+    fileInputRef,
+    avatarCropModal,
+    profileUpdateCompleteModalRef,
+    emojiImportModalRef,
+  ],
+  address,
 }: FormValue) {
   const { register, handleSubmit, reset } = useForm<ProfileDto>({
     mode: "onBlur",
@@ -48,6 +63,20 @@ export default function SettingForm({
       return profile;
     }, [profile]),
   });
+
+  const {
+    register: blogRegister,
+    handleSubmit: blogHandleSubmit,
+    reset: blogReset,
+  } = useForm<BlogSettingFormValue>({
+    mode: "onBlur",
+    defaultValues: useMemo(() => {
+      return { MisskeyAddress: address };
+    }, [address]),
+  });
+
+  const [blogLoading, setBlogLoading] = useState<boolean>(false);
+  const [addressValue, setAddressValue] = useState<string | null>(null);
 
   const handleInputClick = () => {
     if (!fileInputRef.current) return;
@@ -119,11 +148,18 @@ export default function SettingForm({
       alert(err);
     }
   };
+
+  const addressOnSubmit = (data: BlogSettingFormValue) => {
+    setAddress(data.MisskeyAddress);
+    emojiImportModalRef.current?.showModal();
+  };
+
   useEffect(() => {
     reset(profile);
-  }, [profile]);
+    blogReset({ MisskeyAddress: address });
+  }, [profile, address]);
   return (
-    <div className="w-full grid grid-cols-1 desktop:grid-cols-3 gap-4">
+    <div className="w-full grid grid-cols-1 desktop:grid-cols-3">
       <div className="flex flex-col items-center gap-4 desktop:border-r">
         <span className="text-2xl font-bold">아바타 설정</span>
         <div className="w-48 h-48 flex justify-center items-center rounded-full border border-dashed border-slate-400">
@@ -166,7 +202,8 @@ export default function SettingForm({
           아바타 초기화
         </button>
       </div>
-      <div className="flex justify-center">
+      <div className="flex flex-col items-center gap-4 desktop:border-r">
+        <span className="text-2xl font-bold">프로필 설정</span>
         <form
           onSubmit={handleSubmit(onSubmit)}
           className="w-full desktop:w-[24rem] flex flex-col gap-2"
@@ -207,6 +244,32 @@ export default function SettingForm({
             </button>
           </div>
         </form>
+      </div>
+      <div className="flex justify-center">
+        <div className="flex flex-col items-center gap-4">
+          <span className="text-2xl font-bold">블로그 설정</span>
+          <form onSubmit={blogHandleSubmit(addressOnSubmit)}>
+            <div className="border-b border-b-black">
+              <label className="input flex items-center gap-2">
+                <span className="font-bold">서버 주소</span>
+                <input
+                  {...blogRegister("MisskeyAddress")}
+                  type="text"
+                  className="w-56 desktop:w-72"
+                />
+              </label>
+            </div>
+            <div className="w-full flex justify-end mt-2">
+              <button
+                type="submit"
+                className="btn btn-outline btn-lg"
+                onClick={() => emojiImportModalRef.current?.showModal()}
+              >
+                저장
+              </button>
+            </div>
+          </form>
+        </div>
       </div>
     </div>
   );

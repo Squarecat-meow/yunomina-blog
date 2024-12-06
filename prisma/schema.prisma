@@ -14,6 +14,15 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model emojis {
+  id        Int     @id @default(autoincrement())
+  aliases   String[]
+  name      String
+  category  String?
+  url       String
+  isSensitive Boolean?
+}
+
 model user {
   id        Int     @id @default(autoincrement())
   userId    String  @unique
