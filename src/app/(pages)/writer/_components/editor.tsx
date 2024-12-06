@@ -15,6 +15,9 @@ import {
   MarkdownShortcutPlugin,
 } from "@lexical/react/LexicalMarkdownShortcutPlugin";
 import ImagePlugin from "./plugins/imagePlugin";
+import { AutoLinkPlugin } from "@lexical/react/LexicalAutoLinkPlugin";
+import { MATCHERS } from "./utils/autoLinkMatchers";
+import EmojisPlugin from "./plugins/emojisPlugin";
 
 export default function Editor() {
   const [editor] = useLexicalComposerContext();
@@ -42,6 +45,8 @@ export default function Editor() {
         <CodeHighlightPlugin />
         <ImagePlugin />
         <MarkdownShortcutPlugin transformers={DEFAULT_TRANSFORMERS} />
+        <AutoLinkPlugin matchers={MATCHERS} />
+        <EmojisPlugin />
       </div>
     </div>
   );
