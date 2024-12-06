@@ -290,6 +290,7 @@ export default function Writer() {
         <DialogModalTwoButton
           title={"포스트하기"}
           body={"내가 쓴 글을 이제 모두에게 보여줄까?"}
+          confirmButtonColor="btn-primary"
           confirmButtonText={"네!"}
           onClick={handlePost}
           cancelButtonText={"아니오"}
