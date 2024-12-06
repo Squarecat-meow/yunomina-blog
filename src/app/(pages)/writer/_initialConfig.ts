@@ -4,7 +4,7 @@ import { CodeHighlightNode, CodeNode } from "@lexical/code";
 import { HorizontalRuleNode } from "@lexical/react/LexicalHorizontalRuleNode";
 import { AutoLinkNode, LinkNode } from "@lexical/link";
 import { ImageNode } from "./_components/nodes/imageNode";
-import { EmojiNode } from "./_components/nodes/emojiNode";
+import { KeomojiNode } from "./_components/nodes/keomojiNode";
 
 const theme = {
   ltr: "ltr",
@@ -28,6 +28,7 @@ const theme = {
     listitem: "dark:text-white",
   },
   image: "editor-image",
+  keomoji: "align-middle inline-block",
   link: "font-medium text-blue-600 dark:text-blue-500 hover:underline",
   text: {
     bold: "font-bold",
@@ -95,6 +96,6 @@ export const initialConfig = {
     ListItemNode,
     QuoteNode,
     ImageNode,
-    EmojiNode,
+    KeomojiNode,
   ],
 };
