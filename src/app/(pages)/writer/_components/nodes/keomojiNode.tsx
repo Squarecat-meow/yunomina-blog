@@ -18,7 +18,7 @@ export interface KeomojiPayload {
   key?: NodeKey;
 }
 
-export type SerializedImageNode = Spread<
+export type SerializedKeomojiNode = Spread<
   {
     name: string;
     height: number;
@@ -35,7 +35,7 @@ export class KeomojiNode extends DecoratorNode<ReactElement> {
   __name: string;
 
   static getType(): string {
-    return "image";
+    return "keomoji";
   }
 
   static clone(node: KeomojiNode): KeomojiNode {
@@ -48,7 +48,7 @@ export class KeomojiNode extends DecoratorNode<ReactElement> {
     );
   }
 
-  static importJSON(serializedNode: SerializedImageNode): KeomojiNode {
+  static importJSON(serializedNode: SerializedKeomojiNode): KeomojiNode {
     const { name, height, width, src } = serializedNode;
     const node = $createKeomojiNode({
       name,
@@ -67,12 +67,12 @@ export class KeomojiNode extends DecoratorNode<ReactElement> {
     return { element };
   }
 
-  exportJSON(): SerializedImageNode {
+  exportJSON(): SerializedKeomojiNode {
     return {
       name: this.__name,
       height: this.__height,
       src: this.getSrc(),
-      type: "image",
+      type: "keomoji",
       version: 1,
       width: this.__width,
     };
