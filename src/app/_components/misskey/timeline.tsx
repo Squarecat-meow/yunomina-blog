@@ -61,7 +61,6 @@ export default function MisskeyTimeline({ handle }: TimelineProps) {
   };
 
   const startWebSocket = (host: string, username: string) => {
-    const id = crypto.randomUUID();
     const ws = new WebSocket(
       `wss://${host}/streaming?i=${process.env.NEXT_PUBLIC_MISSKEY_STREAMING_TOKEN_SERAFUKU}`
     );
@@ -71,7 +70,7 @@ export default function MisskeyTimeline({ handle }: TimelineProps) {
       ws.send(
         JSON.stringify({
           type: "connect",
-          body: { channel: "homeTimeline", id: id },
+          body: { channel: "homeTimeline", id: "3" },
         })
       );
     };

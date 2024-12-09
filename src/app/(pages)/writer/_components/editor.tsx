@@ -33,9 +33,7 @@ export default function Editor() {
       <div className="p-4">
         <RichTextPlugin
           contentEditable={
-            <div>
-              <ContentEditable className="min-h-[calc(100vh-242px-48px)] focus:outline-none" />
-            </div>
+            <ContentEditable className="min-h-[calc(100vh-242px-48px)] focus:outline-none" />
           }
           ErrorBoundary={LexicalErrorBoundary}
         />
