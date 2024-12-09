@@ -23,7 +23,7 @@ export default function MiName({
     const nameArray = Array.from(inputName.matchAll(nameRegex))
       .map((match) => match[0].trim())
       .filter((item) => item !== "");
-    let resultArray: ReactNode[] = [];
+    const resultArray: ReactNode[] = [];
 
     if (!keomoji || instanceType === "mastodon") {
       resultArray.push(<span>{inputName}</span>);
