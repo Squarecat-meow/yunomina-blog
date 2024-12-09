@@ -75,7 +75,7 @@ export default function Writer() {
           author: "",
           body: "",
         };
-        const regex = new RegExp(/(?:blob:http:)[^)]*/gm);
+        const regex = new RegExp(/(?:blob:)[^)]*/gm);
         const imageUrls = [...markdown.matchAll(regex)].flat();
 
         const fetchUrls = async (urls: string[]) => {

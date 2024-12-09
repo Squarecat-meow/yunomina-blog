@@ -69,7 +69,7 @@ ${data.body}
 
   const postAddress = `https://${process.env.BACKBLAZE_BUCKET}.s3.${process.env.BACKBLAZE_REGION}.backblazeb2.com/${fileName}.mdx`;
 
-  const post = await prisma.post.create({
+  await prisma.post.create({
     data: {
       postUrl: postAddress,
       title: data.title,
