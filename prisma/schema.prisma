@@ -37,6 +37,7 @@ model profile {
   avatarUrl    String?
   sentences    String?
   introduce    String?
+  misskeyHandle String?
   ownedCategory category[]
   user         user    @relation(fields: [userId], references: [userId])
   post         post[]

@@ -57,7 +57,7 @@ export default function MiNote({ note }: NoteProps) {
                 </span>
               </div>
             </div>
-            <p>{note.renote.text}</p>
+            <p className="prose whitespace-pre-line">{note.renote.text}</p>
           </div>
         </>
       ) : (
@@ -92,7 +92,7 @@ export default function MiNote({ note }: NoteProps) {
               {note.cw}
             </div>
             <div className="collapse-content px-2">
-              <p className="prose">{note.text}</p>
+              <p className="prose whitespace-pre-line">{note.text}</p>
               {note.files.length > 0 && (
                 <div>
                   {note.files.map((el) => (
@@ -111,7 +111,9 @@ export default function MiNote({ note }: NoteProps) {
         </>
       ) : (
         <>
-          <p className="prose">{note.text}</p>
+          <p className="prose leading-normal whitespace-pre-line">
+            {note.text}
+          </p>
           {note.files.length > 0 && (
             <div>
               {note.files.map((el) => (
