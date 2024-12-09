@@ -75,7 +75,7 @@ export default function Writer() {
           author: "",
           body: "",
         };
-        const regex = new RegExp(/(?:blob:)[^)]*/gm);
+        const regex = new RegExp(/(?:blob:http)[^)]*/gm);
         const imageUrls = [...markdown.matchAll(regex)].flat();
 
         const fetchUrls = async (urls: string[]) => {
@@ -101,7 +101,10 @@ export default function Writer() {
           const bucketImages = await Promise.all(res.map((res) => res));
 
           for (const data in bucketImages) {
-            markdown = markdown.replace(/(?:blob)[^)]*/m, bucketImages[data]);
+            markdown = markdown.replace(
+              /(?:blob:http)[^)]*/m,
+              bucketImages[data]
+            );
           }
 
           const jwtToken = await getCookie("jwtToken");
