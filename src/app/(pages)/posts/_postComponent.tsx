@@ -49,10 +49,11 @@ export default function PostComponent({
               width={384}
               height={192}
               objectFit="cover"
+              className="rounded-t-box"
             />
           </figure>
         )}
-        <div className="card-body p-4 h-full">
+        <div className="card-body p-4">
           <h2 className="card-title text-2xl font-bold">{posts.title}</h2>
           <div className="flex flex-col">
             <div className="flex items-center gap-2">

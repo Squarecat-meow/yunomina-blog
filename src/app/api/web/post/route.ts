@@ -49,6 +49,8 @@ postDate: ${postDate}
 ${data.body}
 `;
 
+  console.log(markdownWithMetadata);
+
   const res = await s3.send(
     new PutObjectCommand({
       Bucket,
