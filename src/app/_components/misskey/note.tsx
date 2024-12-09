@@ -18,9 +18,9 @@ export default function MiNote({ note }: NoteProps) {
               className="w-6 h-6 object-cover rounded-full"
             />
             <FaRetweet />
-            <div className="text-xs flex gap-1">
+            <div className="text-xs flex items-center gap-1">
               <MiName
-                size={4}
+                size={6}
                 instanceType={
                   note.user.instance
                     ? note.user.instance.softwareName
