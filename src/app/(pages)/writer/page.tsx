@@ -86,13 +86,13 @@ export default function Writer() {
 
             return data;
           } catch (err) {
-            alert(err);
+            throw new Error(`blob URL fetch 에러! ${err}`);
           }
         };
         const images = await fetchUrls(imageUrls)
           .then((data) => data)
           .catch((err) => {
-            throw new Error(err);
+            throw err;
           });
 
         if (images) {
@@ -153,6 +153,7 @@ export default function Writer() {
       }
     } catch (err) {
       alert(err);
+      console.log(err);
     }
   };
 
