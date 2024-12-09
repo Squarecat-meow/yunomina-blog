@@ -1,10 +1,8 @@
 import { MiNoteDto } from "@/app/_dto/MiNote.dto";
 import { useCallback, useEffect, useState } from "react";
 import MiNote from "./note";
-import { ProfileDto } from "@/app/_dto/profile.dto";
 import { MiUserDto } from "@/app/_dto/MiUser.dto";
 import MiName from "./nameComponent";
-import { hostname } from "os";
 import { SiMisskey } from "react-icons/si";
 
 type TimelineProps = {

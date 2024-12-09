@@ -71,7 +71,6 @@ export default function Setting() {
             profileUpdateCompleteModalRef,
             emojiImportModalRef,
           ]}
-          streamingHandle={misskeyHandle}
         />
       ) : (
         <div className="w-full desktop:w-[90%] p-6 grid grid-cols-1 desktop:grid-cols-3">

@@ -10,10 +10,8 @@ import {
   SetStateAction,
   useEffect,
   useMemo,
-  useState,
 } from "react";
 import { useForm } from "react-hook-form";
-import { MisskeyHandle } from "./page";
 
 type FormValue = {
   profile: ProfileDto;
@@ -28,7 +26,6 @@ type FormValue = {
     emojiImportModalRef: RefObject<HTMLDialogElement>
   ];
   address: string | null;
-  streamingHandle: MisskeyHandle;
 };
 
 type BlogSettingFormValue = {
@@ -58,7 +55,6 @@ export default function ProfileSettingForm({
     emojiImportModalRef,
   ],
   address,
-  streamingHandle,
 }: FormValue) {
   const { register, handleSubmit, reset } = useForm<ProfileDto>({
     mode: "onBlur",
@@ -77,22 +73,6 @@ export default function ProfileSettingForm({
       return { MisskeyAddress: address };
     }, [address]),
   });
-
-  const {
-    register: streamingRegister,
-    handleSubmit: streamingHandleSubmit,
-    reset: streamingReset,
-  } = useForm<MisskeyHandle>({
-    mode: "onBlur",
-    defaultValues: useMemo(() => {
-      return {
-        streamingLeftHandle: streamingHandle?.streamingLeftHandle,
-        streamingRightHandle: streamingHandle?.streamingRightHandle,
-      };
-    }, [streamingHandle]),
-  });
-
-  const [streamingLoading, setStreamingLoading] = useState<boolean>(false);
 
   const handleInputClick = () => {
     if (!fileInputRef.current) return;
@@ -170,19 +150,10 @@ export default function ProfileSettingForm({
     emojiImportModalRef.current?.showModal();
   };
 
-  const streamingOnSubmit = (data: MisskeyHandle) => {
-    setStreamingLoading(true);
-    localStorage.setItem("misskeyHandle", JSON.stringify(data));
-    setTimeout(() => {
-      setStreamingLoading(false);
-    }, 1500);
-  };
-
   useEffect(() => {
     reset(profile);
     blogReset({ MisskeyAddress: address });
-    streamingReset(streamingHandle);
-  }, [profile, address, streamingHandle]);
+  }, [profile, address]);
   return (
     <div className="w-full grid grid-cols-1 desktop:grid-cols-3">
       <div className="flex flex-col items-center gap-4 desktop:border-r">
@@ -291,38 +262,6 @@ export default function ProfileSettingForm({
                 onClick={() => emojiImportModalRef.current?.showModal()}
               >
                 저장
-              </button>
-            </div>
-          </form>
-          <span className="text-2xl font-bold">타임라인 설정</span>
-          <form onSubmit={streamingHandleSubmit(streamingOnSubmit)}>
-            <div className="border-b border-b-black">
-              <label className="input flex items-center gap-2">
-                <span className="font-bold">왼쪽 탐라 핸들</span>
-                <input
-                  {...streamingRegister("streamingLeftHandle")}
-                  type="text"
-                  className="w-40 desktop:w-60"
-                />
-              </label>
-            </div>
-            <div className="border-b border-b-black">
-              <label className="input flex items-center gap-2">
-                <span className="font-bold">오른쪽 탐라 핸들</span>
-                <input
-                  {...streamingRegister("streamingRightHandle")}
-                  type="text"
-                  className="w-40 desktop:w-56"
-                />
-              </label>
-            </div>
-            <div className="w-full flex justify-end mt-2">
-              <button
-                type="submit"
-                className="btn btn-outline btn-lg"
-                disabled={streamingLoading ? true : false}
-              >
-                {streamingLoading ? "저장했어!" : "저장"}
               </button>
             </div>
           </form>
