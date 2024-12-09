@@ -2,10 +2,15 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import AvatarCrop from "./_Avatar/page";
-import SettingForm from "./_form";
+import ProfileSettingForm from "./profileSettingForm";
 import { ProfileDto } from "@/app/_dto/profile.dto";
 import DialogModalTwoButton from "@/app/_components/modalTwoButton";
 import DialogModalLoadingOneButton from "@/app/_components/modalLoadingOneButton";
+
+export type MisskeyHandle = {
+  streamingLeftHandle: string | null;
+  streamingRightHandle: string | null;
+};
 
 export default function Setting() {
   const [avatar, setAvatar] = useState<string | null>(null);
@@ -13,6 +18,10 @@ export default function Setting() {
   const [emojiLoading, setEmojiLoading] = useState<boolean>(false);
   const [profile, setProfile] = useState<ProfileDto>();
   const [address, setAddress] = useState<string | null>(null);
+  const [misskeyHandle, setMisskeyHandle] = useState<MisskeyHandle>({
+    streamingLeftHandle: null,
+    streamingRightHandle: null,
+  });
   const fileInputRef = useRef<HTMLInputElement>(null);
   const avatarCropModal = useRef<HTMLDialogElement>(null);
   const profileUpdateCompleteModalRef = useRef<HTMLDialogElement>(null);
@@ -30,18 +39,26 @@ export default function Setting() {
     if (res.ok) setEmojiLoading(false);
   };
 
-  useEffect(() => {
+  const fetchSettingValues = useCallback(async () => {
     const parsedProfile = JSON.parse(localStorage.getItem("profile") ?? "");
     const misskeyAddress = localStorage.getItem("misskeyAddress") ?? "";
+    const misskeyHandle = JSON.parse(
+      localStorage.getItem("misskeyHandle") ?? "{}"
+    );
     setProfile(parsedProfile);
     setAvatar(parsedProfile.avatarUrl);
     setAddress(misskeyAddress);
+    setMisskeyHandle(misskeyHandle);
   }, []);
+
+  useEffect(() => {
+    fetchSettingValues();
+  }, [fetchSettingValues]);
 
   return (
     <div className="w-full desktop:w-[90%] p-6 flex justify-center">
       {profile ? (
-        <SettingForm
+        <ProfileSettingForm
           address={address}
           profile={profile}
           avatar={avatar}
@@ -54,6 +71,7 @@ export default function Setting() {
             profileUpdateCompleteModalRef,
             emojiImportModalRef,
           ]}
+          streamingHandle={misskeyHandle}
         />
       ) : (
         <div className="w-full desktop:w-[90%] p-6 grid grid-cols-1 desktop:grid-cols-3">
