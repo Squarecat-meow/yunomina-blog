@@ -4,9 +4,11 @@ import {
   $insertNodes,
   $isRootOrShadowRoot,
   COMMAND_PRIORITY_EDITOR,
+  COMMAND_PRIORITY_NORMAL,
   createCommand,
   LexicalCommand,
   LexicalEditor,
+  PASTE_COMMAND,
 } from "lexical";
 import { ChangeEvent, RefObject, useEffect, useRef, useState } from "react";
 import {
@@ -15,7 +17,7 @@ import {
   ImageNode,
   ImagePayload,
 } from "../nodes/imageNode";
-import Image from "next/image";
+import NextImage from "next/image";
 import { Image as CarbonImage } from "@carbon/icons-react";
 import { $wrapNodeInElement, mergeRegister } from "@lexical/utils";
 import { TextMatchTransformer } from "@lexical/markdown";
@@ -121,7 +123,7 @@ export function InsertImageDialog({
                   }
                 }}
               >
-                <Image src={selectedImage} fill alt="user selected image" />
+                <NextImage src={selectedImage} fill alt="user selected image" />
               </button>
             ) : (
               <>
@@ -187,7 +189,7 @@ export function InsertImageDialog({
                   className="btn btn-primary"
                   onClick={() => {
                     if (selectedImage)
-                      onClick({ src: selectedImage, width: 800, height: 450 });
+                      onClick({ src: selectedImage, width: 1200, height: 675 });
                   }}
                 >
                   확인
@@ -223,6 +225,24 @@ export default function ImagePlugin() {
           return true;
         },
         COMMAND_PRIORITY_EDITOR
+      ),
+      editor.registerCommand(
+        PASTE_COMMAND,
+        (e: ClipboardEvent) => {
+          const { clipboardData } = e;
+          if (clipboardData && clipboardData.types.includes("Files")) {
+            const url = URL.createObjectURL(clipboardData.files[0]);
+            const imageNode = $createImageNode({
+              src: url,
+              width: 1200,
+              height: 675,
+            });
+            $insertNodes([imageNode]);
+          }
+
+          return true;
+        },
+        COMMAND_PRIORITY_NORMAL
       )
     );
   }, [editor]);
