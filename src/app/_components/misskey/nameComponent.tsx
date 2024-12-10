@@ -1,5 +1,5 @@
 import { emojis } from "@prisma/client";
-import { ReactNode, useCallback, useEffect, useState } from "react";
+import { ReactNode, useEffect, useState } from "react";
 
 type MiNameProps = {
   name: string;
