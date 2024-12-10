@@ -34,6 +34,10 @@ export default function RootLayout({
           data-domain="yuno.mina.house"
           src="https://plausible.mina.house/js/script.js"
         ></script>
+        <meta
+          name="google-site-verification"
+          content="mXr9xeLPH7srkDxe75OTKBpCxubthM1JdLTuGVoqWf0"
+        />
       </head>
       <body
         className={`${Pretendard.variable} ${IBMMono.variable} font-[family-name:var(--font-pretendard-variable)] antialiased flex flex-col items-center p-2 desktop:p-6`}
