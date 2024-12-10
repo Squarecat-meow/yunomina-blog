@@ -2,7 +2,6 @@
 
 FROM node:22-bookworm AS base
 
-# libc-compat 설치
 FROM base AS deps
 WORKDIR /app
 
@@ -13,7 +12,6 @@ RUN npm ci
 # 소스코드 빌드하는 곳
 FROM base AS builder
 WORKDIR /app
-COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
 RUN npx prisma generate
