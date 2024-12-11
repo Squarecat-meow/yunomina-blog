@@ -60,7 +60,7 @@ export default function MisskeyTimeline({ handle }: TimelineProps) {
     return { host, username };
   };
 
-  const startWebSocket = (host: string, username: string) => {
+  const startWebSocket = useCallback((host: string, username: string) => {
     const ws = new WebSocket(
       `wss://${host}/streaming?i=${process.env.NEXT_PUBLIC_MISSKEY_STREAMING_TOKEN_SERAFUKU}`
     );
@@ -92,12 +92,14 @@ export default function MisskeyTimeline({ handle }: TimelineProps) {
         startWebSocket(host, username);
       }
     };
-  };
+    return () => {
+      ws.close();
+    };
+  }, []);
 
   const fn = useCallback(async (host: string, username: string) => {
     const firstTenNotes = await fetchFirstTenNotes(host, username);
     setNotes(firstTenNotes);
-    startWebSocket(host, username);
     const res = await fetch(
       `https://${host}/api/users/search-by-username-and-host`,
       {
@@ -123,7 +125,10 @@ export default function MisskeyTimeline({ handle }: TimelineProps) {
       if (!host || !username) return;
 
       setHostAndUsername({ host: host, username: username });
+      const ws = startWebSocket(host, username);
       fn(host, username);
+
+      return ws;
     }
   }, [fn, handle]);
 
