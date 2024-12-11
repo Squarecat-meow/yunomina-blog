@@ -57,7 +57,9 @@ export default function MiNote({ note }: NoteProps) {
                 </span>
               </div>
             </div>
-            <p className="prose whitespace-pre-line">{note.renote.text}</p>
+            <p className="prose break-all whitespace-pre-line">
+              {note.renote.text}
+            </p>
           </div>
         </>
       ) : (
@@ -89,10 +91,10 @@ export default function MiNote({ note }: NoteProps) {
           <div className="collapse collapse-arrow border border-base-300 my-2">
             <input type="checkbox" />
             <div className="collapse-title flex items-center px-2 prose">
-              {note.cw}
+              <p className="w-[calc(100%-2rem)]">{note.cw}</p>
             </div>
             <div className="collapse-content px-2">
-              <p className="prose whitespace-pre-line">{note.text}</p>
+              <p className="prose break-all whitespace-pre-line">{note.text}</p>
               {note.files.length > 0 && (
                 <div>
                   {note.files.map((el) => (
@@ -111,7 +113,7 @@ export default function MiNote({ note }: NoteProps) {
         </>
       ) : (
         <>
-          <p className="prose leading-normal whitespace-pre-line">
+          <p className="prose break-all leading-normal whitespace-pre-line">
             {note.text}
           </p>
           {note.files.length > 0 && (
