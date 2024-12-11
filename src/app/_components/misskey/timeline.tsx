@@ -75,8 +75,8 @@ export default function MisskeyTimeline({ handle }: TimelineProps) {
       );
     };
     ws.onmessage = (msg) => {
-      const note = JSON.parse(msg.data)?.body.body as MiNoteDto;
-
+      const note = JSON.parse(msg.data).body.body as MiNoteDto;
+      if (!note) return;
       if (note.user.username === username) {
         if (notes?.some((el) => el.id === note.id)) return;
         setNotes((prevNote) => [note, ...(prevNote ? prevNote : [])]);
@@ -129,7 +129,7 @@ export default function MisskeyTimeline({ handle }: TimelineProps) {
 
   return (
     <div className="join join-vertical overflow-auto rounded-box border border-base-300 shadow w-full desktop:h-[48rem]">
-      <div className="join-item w-full flex justify-center py-2 sticky top-0 border-b border-base-300 z-10 bg-white/30 dark:bg-slate-700/30 backdrop-blur">
+      <div className="join-item w-full flex justify-center py-2 sticky top-0 border-b border-base-300 bg-white/30 dark:bg-slate-700/30 backdrop-blur">
         {profile && profile.avatarUrl && (
           <div className="text-lg flex items-center gap-1">
             <img
@@ -150,8 +150,8 @@ export default function MisskeyTimeline({ handle }: TimelineProps) {
       </div>
       {notes ? (
         <>
-          {notes.map((note) => (
-            <div key={note.id} className="w-full join-item">
+          {notes.map((note, key) => (
+            <div key={key} className="w-full join-item">
               <MiNote note={note} />
             </div>
           ))}
