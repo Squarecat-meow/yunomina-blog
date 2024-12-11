@@ -78,6 +78,7 @@ export default function MisskeyTimeline({ handle }: TimelineProps) {
       const note = JSON.parse(msg.data)?.body.body as MiNoteDto;
 
       if (note.user.username === username) {
+        if (notes?.some((el) => el.id === note.id)) return;
         setNotes((prevNote) => [note, ...(prevNote ? prevNote : [])]);
       } else {
         return;
@@ -127,9 +128,9 @@ export default function MisskeyTimeline({ handle }: TimelineProps) {
   }, [fn, handle]);
 
   return (
-    <div className="overflow-y-scroll rounded-box border border-base-300 shadow w-full desktop:h-[48rem]">
-      {profile && profile.avatarUrl && (
-        <div className="w-full flex justify-center py-2 border-b border-base-300">
+    <div className="join join-vertical overflow-auto rounded-box border border-base-300 shadow w-full desktop:h-[48rem]">
+      <div className="join-item w-full flex justify-center py-2 sticky top-0 border-b border-base-300 z-10 bg-white/30 dark:bg-slate-700/30 backdrop-blur">
+        {profile && profile.avatarUrl && (
           <div className="text-lg flex items-center gap-1">
             <img
               src={profile.avatarUrl}
@@ -145,12 +146,12 @@ export default function MisskeyTimeline({ handle }: TimelineProps) {
             <span>의</span>
             <SiMisskey size={24} fill="#739900" />
           </div>
-        </div>
-      )}
+        )}
+      </div>
       {notes ? (
         <>
           {notes.map((note) => (
-            <div key={note.id} className="w-full">
+            <div key={note.id} className="w-full join-item">
               <MiNote note={note} />
             </div>
           ))}
