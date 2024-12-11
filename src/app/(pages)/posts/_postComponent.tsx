@@ -36,7 +36,7 @@ export default function PostComponent({
 
   return (
     <div
-      className={`card card-bordered min-w-[24rem] min-h-[12rem] hover:shadow transition-shadow my-2 desktop:m-2 ${
+      className={`card card-bordered w-[22rem] m-2 desktop:w-[24rem] min-h-[12rem] hover:shadow transition-shadow my-2 ${
         posts.thumbnail && "row-span-2"
       }`}
     >

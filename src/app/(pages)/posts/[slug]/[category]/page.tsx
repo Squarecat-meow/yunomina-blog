@@ -50,7 +50,7 @@ export default async function CategoryPage({
   }
 
   return (
-    <div className="desktop:grid desktop:grid-cols-2">
+    <div className="grid desktop:grid-cols-2">
       {posts.length <= 0 ? (
         <div className="w-full flex justify-center">
           <h2 className="text-2xl font-semibold">글이 없어요!</h2>

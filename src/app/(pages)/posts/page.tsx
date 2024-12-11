@@ -14,7 +14,7 @@ export default async function Posts() {
   const jwtToken = (await cookies()).get("jwtToken");
 
   return (
-    <div className="desktop:grid desktop:grid-cols-2">
+    <div className="grid desktop:grid-cols-2">
       {posts.length !== 0 ? (
         <>
           {posts.map((post) => (
