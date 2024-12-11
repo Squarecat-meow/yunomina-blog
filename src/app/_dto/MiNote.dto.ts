@@ -17,6 +17,18 @@ export interface MiNoteDto {
   renote: {
     createdAt: Date;
     cw: string | null;
+    files: [
+      {
+        id: string;
+        name: string;
+        properties: {
+          width: number;
+          height: number;
+        };
+        thumbnailUrl: string;
+        url: string;
+      }
+    ];
     id: string;
     text: string;
     user: {

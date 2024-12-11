@@ -60,6 +60,19 @@ export default function MiNote({ note }: NoteProps) {
             <p className="prose break-all whitespace-pre-line">
               {note.renote.text}
             </p>
+            {note.renote.files.length > 0 && (
+              <>
+                {note.renote.files.map((el) => (
+                  <div key={el.id} className="flex justify-center h-36">
+                    <img
+                      src={el.thumbnailUrl}
+                      alt={el.name}
+                      className="object-contain"
+                    />
+                  </div>
+                ))}
+              </>
+            )}
           </div>
         </>
       ) : (
@@ -96,7 +109,7 @@ export default function MiNote({ note }: NoteProps) {
             <div className="collapse-content px-2">
               <p className="prose break-all whitespace-pre-line">{note.text}</p>
               {note.files.length > 0 && (
-                <div>
+                <>
                   {note.files.map((el) => (
                     <div key={el.id} className="flex justify-center h-36">
                       <img
@@ -106,7 +119,7 @@ export default function MiNote({ note }: NoteProps) {
                       />
                     </div>
                   ))}
-                </div>
+                </>
               )}
             </div>
           </div>
@@ -117,7 +130,7 @@ export default function MiNote({ note }: NoteProps) {
             {note.text}
           </p>
           {note.files.length > 0 && (
-            <div>
+            <>
               {note.files.map((el) => (
                 <div key={el.id} className="flex justify-center h-36">
                   <img
@@ -127,7 +140,7 @@ export default function MiNote({ note }: NoteProps) {
                   />
                 </div>
               ))}
-            </div>
+            </>
           )}
         </>
       )}
