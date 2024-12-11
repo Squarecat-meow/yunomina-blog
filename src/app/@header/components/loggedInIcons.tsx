@@ -17,7 +17,7 @@ export default function LoggedinIcons({
   return (
     <div className="cursor-pointer">
       <div tabIndex={0} className="dropdown dropdown-bottom dropdown-end">
-        <div className="rounded-lg hover:shadow transition-shadow flex items-center desktop:px-4 py-2 gap-2">
+        <div className="rounded-lg desktop:hover:shadow transition-shadow flex items-center desktop:px-4 py-2 gap-2">
           {avatarUrl && avatarUrl !== "" ? (
             <button className="btn btn-circle">
               <Image

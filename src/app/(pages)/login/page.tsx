@@ -71,11 +71,11 @@ export default function Login() {
     <div className="w-full desktop:w-[90%] flex flex-col items-center p-6">
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="flex flex-col gap-4 w-full desktop:w-[24rem]"
+        className="flex flex-col gap-4 w-[20rem] desktop:w-[24rem]"
       >
         <span>관리자 로그인</span>
         <label className="input flex items-center gap-2">
-          <div className="border-b border-b-black flex flex-col items-center">
+          <div className="w-full border-b border-b-black flex flex-col items-center">
             {errors.userId && errors.userId.type === "idNotFound" && (
               <div
                 className="tooltip tooltip-open tooltip-error"
@@ -96,7 +96,7 @@ export default function Login() {
           </div>
         </label>
         <label className="input flex items-center gap-2">
-          <div className="border-b border-b-black flex flex-col items-center">
+          <div className="w-full border-b border-b-black flex flex-col items-center">
             {errors.password && errors.password.type === "passwordNotMatch" && (
               <div
                 className="tooltip tooltip-open tooltip-error"

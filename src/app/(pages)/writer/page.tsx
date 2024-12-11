@@ -218,10 +218,10 @@ export default function Writer() {
             onSubmit={handleSubmit(onSubmit)}
             className="flex justify-between"
           >
-            <div className="w-full desktop:flex desktop:gap-2 mb-2">
+            <div className="w-full flex flex-col desktop:flex-row gap-2 mb-2">
               <select
                 {...register("category", { required: true })}
-                className="select shadow"
+                className="select shadow w-fit"
                 disabled={category === undefined && true}
                 onChange={onCategoryChange}
               >
@@ -249,23 +249,25 @@ export default function Writer() {
                   </>
                 )}
               </select>
-              <label className="w-full input shadow flex items-center gap-2">
-                <span className="font-bold w-8">제목</span>
-                <input
-                  autoComplete="off"
-                  type="text"
-                  {...register("title", { required: true })}
-                  className={`w-full ${
-                    errors.title && "input-bordered input-error"
-                  }`}
-                />
-              </label>
-              <button
-                type="submit"
-                className="w-24 h-12 rounded-btn shadow hover:bg-primary hover:text-white px-4 py-2 transition-all active:scale-95"
-              >
-                올리기
-              </button>
+              <div className="flex w-full gap-2">
+                <label className="w-full input shadow flex items-center gap-2">
+                  <span className="font-bold w-12">제목</span>
+                  <input
+                    autoComplete="off"
+                    type="text"
+                    {...register("title", { required: true })}
+                    className={`w-full ${
+                      errors.title && "input-bordered input-error"
+                    }`}
+                  />
+                </label>
+                <button
+                  type="submit"
+                  className="w-24 h-12 rounded-btn shadow hover:bg-primary hover:text-white px-4 py-2 transition-all active:scale-95"
+                >
+                  올리기
+                </button>
+              </div>
             </div>
           </form>
           <Editor />
