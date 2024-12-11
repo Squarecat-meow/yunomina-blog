@@ -11,6 +11,7 @@ import { useRouter } from "next/navigation";
 import { ProfileDto } from "../_dto/profile.dto";
 import headerImage from "../../../public/header-image.gif";
 import Image from "next/image";
+import DialogModalTwoButton from "../_components/modalTwoButton";
 
 export default function Header() {
   const [profile, setProfile] = useState<ProfileDto | null | undefined>();
@@ -99,7 +100,12 @@ export default function Header() {
         </div>
       </div>
       <div className="flex items-center gap-12">
-        <Image src={headerImage} alt="header yunomina" unoptimized />
+        <Image
+          src={headerImage}
+          alt="header yunomina"
+          unoptimized
+          className="absolute left-1/2 transform -translate-x-1/2 desktop:relative desktop:left-16"
+        />
         <div className="hidden desktop:flex flex-col desktop:flex-row items-center">
           <HeaderButton href="/">Home</HeaderButton>
           <HeaderButton href="/posts">Posts</HeaderButton>
@@ -134,20 +140,15 @@ export default function Header() {
           </div>
         </>
       )}
-      <dialog id="logout" ref={logoutModalRef} className="modal">
-        <div className="modal-box">
-          <h3 className="font-bold text-lg">로그아웃</h3>
-          <p className="py-4">로그아웃하고 나중에 다시 볼까?</p>
-          <div className="modal-action">
-            <form method="dialog" className="flex gap-2">
-              <button className="btn btn-primary" onClick={handleLogout}>
-                나중에 봐~
-              </button>
-              <button className="btn">잠깐만!</button>
-            </form>
-          </div>
-        </div>
-      </dialog>
+      <DialogModalTwoButton
+        title={"로그아웃"}
+        body={"로그아웃하고 나중에 다시 볼까?"}
+        confirmButtonColor={"btn-primary"}
+        confirmButtonText={"나중에 봐~"}
+        onClick={handleLogout}
+        cancelButtonText={"잠깐만!"}
+        ref={logoutModalRef}
+      />
     </div>
   );
 }

@@ -331,7 +331,7 @@ export default function ToolbarPlugin({
   }, []);
 
   return (
-    <div className="h-18 desktop:h-12 flex flex-col desktop:flex-row desktop:items-center p-2 border-b border-base-300">
+    <div className="h-[5rem] desktop:h-12 flex flex-col desktop:flex-row desktop:items-center p-2 border-b border-base-300">
       <div className="flex items-center">
         <EditorButton
           disabled={!canUndo || !isEditable}

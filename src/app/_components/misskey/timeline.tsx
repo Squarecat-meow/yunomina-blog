@@ -127,9 +127,9 @@ export default function MisskeyTimeline({ handle }: TimelineProps) {
   }, [fn, handle]);
 
   return (
-    <div className="overflow-y-scroll border border-black rounded-box w-full desktop:h-[48rem]">
+    <div className="overflow-y-scroll rounded-box border border-base-300 shadow w-full desktop:h-[48rem]">
       {profile && profile.avatarUrl && (
-        <div className="w-full flex justify-center py-2 border-b border-black">
+        <div className="w-full flex justify-center py-2 border-b border-base-300">
           <div className="text-lg flex items-center gap-1">
             <img
               src={profile.avatarUrl}

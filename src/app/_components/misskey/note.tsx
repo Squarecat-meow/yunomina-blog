@@ -8,7 +8,7 @@ type NoteProps = {
 
 export default function MiNote({ note }: NoteProps) {
   return (
-    <div className="p-2 border-b border-black border-collapse">
+    <div className="p-2 border-b border-base-300 border-collapse">
       {note.renote ? (
         <>
           <div className="flex items-center gap-2 mb-1">
@@ -86,7 +86,7 @@ export default function MiNote({ note }: NoteProps) {
       )}
       {note.cw !== null ? (
         <>
-          <div className="collapse collapse-arrow border border-black my-2">
+          <div className="collapse collapse-arrow border border-base-300 my-2">
             <input type="checkbox" />
             <div className="collapse-title flex items-center px-2 prose">
               {note.cw}
