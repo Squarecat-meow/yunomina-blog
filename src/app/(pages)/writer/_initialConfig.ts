@@ -9,8 +9,8 @@ import { KeomojiNode } from "./_components/nodes/keomojiNode";
 const theme = {
   ltr: "ltr",
   rtl: "rtl",
-  placeholder: "editor-placeholder",
-  paragraph: "mb-2 relative",
+  placeholder: "absolute top-0 left-0",
+  paragraph: "mb-2 mt-0",
   quote: "border-l border-l-4 ml-4 pl-2",
   heading: {
     h1: "text-3xl font-extrabold dark:text-white",

@@ -8,7 +8,7 @@ import {
   useRef,
   useState,
 } from "react";
-import EditorButton from "./components/button";
+import EditorButton from "@/app/(pages)/writer/_components/components/button";
 import {
   CarbonIconType,
   Redo,
@@ -27,7 +27,7 @@ import {
   FaceSatisfied,
 } from "@carbon/icons-react";
 import { BsTypeH1, BsTypeH2, BsTypeH3 } from "react-icons/bs";
-import EditorDivider from "./components/divider";
+import EditorDivider from "@/app/(pages)/writer/_components/components/divider";
 import {
   $getNearestNodeOfType,
   $wrapNodeInElement,
@@ -56,8 +56,7 @@ import {
   formatNumberedList,
   formatParagraph,
   formatQuote,
-} from "./utils/toolbarUtils";
-import EditorDropdown from "./components/dropdown";
+} from "@/app/(pages)/writer/_components/utils/toolbarUtils";
 import { IconType } from "react-icons";
 import { $isListNode, ListNode } from "@lexical/list";
 import { $isHeadingNode } from "@lexical/rich-text";
@@ -68,11 +67,11 @@ import {
 } from "@lexical/code";
 import { $isAtNodeEnd } from "@lexical/selection";
 import { $isLinkNode } from "@lexical/link";
-import { blockTypeToBlockName } from "./utils/toolbarUtils";
-import EditorCodeDropdown from "./components/codeDropdown";
 import { EditorContext } from "@/app/_context/contextProvider";
-import { InsertImageDialog } from "./plugins/imagePlugin";
-import EmojiSelector from "./components/emojiSelector";
+import EmojiSelector from "@/app/(pages)/writer/_components/components/emojiSelector";
+import EditorCodeDropdown from "@/app/(pages)/writer/_components/components/codeDropdown";
+import { blockTypeToBlockName } from "@/app/(pages)/writer/_components/utils/toolbarUtils";
+import EditorDropdown from "@/app/(pages)/writer/_components/components/dropdown";
 
 export type DropdownType = {
   key: string;
@@ -395,15 +394,6 @@ export default function ToolbarPlugin({
               <TextStrikethrough size={20} />
             </EditorButton>
             <EditorDivider />
-            <EditorButton
-              onClick={() => ImageDialogModalRef.current?.showModal()}
-            >
-              <InsertImageDialog
-                activeEditor={activeEditor}
-                ref={ImageDialogModalRef}
-              />
-              <Image size={20} />
-            </EditorButton>
             <details className="dropdown">
               <summary tabIndex={0} role="button" className="list-none">
                 <EditorButton>

@@ -53,6 +53,17 @@ model post {
   author       profile @relation(fields: [userId], references: [userId])
   category     category @relation(fields: [categoryId], references: [id])
   categoryId   Int
+  reply         reply[]
+}
+
+model reply {
+  id            Int       @id @default(autoincrement())
+  postId        Int
+  post          post      @relation(fields: [postId], references: [id])
+  text          String
+  replyId       Int?
+  reply         reply?    @relation("rereply", fields: [replyId], references: [id])
+  rereply       reply[]   @relation("rereply")
 }
 
 model category {

@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
-import Header from "./@header/page";
 import { Suspense } from "react";
 import Loading from "./loading";
 
@@ -42,10 +41,7 @@ export default function RootLayout({
       <body
         className={`${Pretendard.variable} ${IBMMono.variable} font-[family-name:var(--font-pretendard-variable)] antialiased flex flex-col items-center p-2 desktop:p-6`}
       >
-        <Suspense fallback={<Loading />}>
-          <Header />
-          {children}
-        </Suspense>
+        <Suspense fallback={<Loading />}>{children}</Suspense>
       </body>
     </html>
   );
