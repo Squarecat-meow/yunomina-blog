@@ -16,20 +16,49 @@ import { MATCHERS } from "@/app/(pages)/writer/_components/utils/autoLinkMatcher
 import EmojiPickerPlugin, {
   KEOMOJI,
 } from "@/app/(pages)/writer/_components/plugins/emojiPickerPlugin";
-import { useCallback, useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 import { $convertToMarkdownString, TRANSFORMERS } from "@lexical/markdown";
+import { GithubProfileDto } from "@/app/_dto/replyGithubProfile.dto";
+import { usePathname } from "next/navigation";
 
 export default function Editor({ enable }: { enable: boolean }) {
   const [editor] = useLexicalComposerContext();
   const markdown = useRef<string | null>(null);
+  const pathname = usePathname();
+  const postId = pathname.match(/(?<=posts\/).+/)?.[0];
 
-  const onEv = useCallback(() => {
+  const onEv = useCallback(async () => {
     editor.update(() => {
       markdown.current = $convertToMarkdownString([KEOMOJI, ...TRANSFORMERS]);
     });
 
-    console.log(markdown.current);
+    const profile = sessionStorage.getItem("githubLogin");
+    if (!profile) {
+      alert("깃헙 프로파일이 없어요!");
+      return;
+    }
+    if (markdown.current === "") {
+      alert("댓글이 비어있어요!");
+    }
+    const parsedProfile = JSON.parse(profile) as GithubProfileDto;
+    const payload = {
+      postId: postId,
+      avatar: parsedProfile.avatar_url,
+      name: parsedProfile.name,
+      reply: markdown.current,
+    };
+
+    const res = await fetch(`/api/web/post/reply`, {
+      method: "POST",
+      headers: {
+        url: parsedProfile.url,
+        id: JSON.stringify(parsedProfile.id),
+      },
+      body: JSON.stringify(payload),
+    });
+    if (!res.ok) alert("댓글을 다는데 실패했어요!");
+    console.log(res.json());
   }, [editor]);
 
   useEffect(() => {

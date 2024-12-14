@@ -58,7 +58,9 @@ model post {
 
 model reply {
   id            Int       @id @default(autoincrement())
-  postId        Int
+  avatar        String?
+  name          String
+  postId        Int       
   post          post      @relation(fields: [postId], references: [id])
   text          String
   replyId       Int?
