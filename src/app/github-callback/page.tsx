@@ -2,26 +2,24 @@
 
 import { useCallback, useEffect } from "react";
 import { GithubProfileDto } from "../_dto/replyGithubProfile.dto";
+import { useSearchParams } from "next/navigation";
 
-export default function GithubCallback({
-  searchParams,
-}: {
-  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
-}) {
+export default function GithubCallback() {
+  const searchParams = useSearchParams();
+
+  const code = searchParams.get("code");
+
   const fn = useCallback(async () => {
-    const params = await searchParams;
-
-    const res = await fetch(`/api/web/github-login?code=${params.code}`);
+    const res = await fetch(`/api/web/github-login?code=${code}`);
 
     return await res.json();
-  }, [searchParams]);
+  }, [code]);
 
   useEffect(() => {
     fn().then((r) => {
-      console.log(r);
-
       const ev = new CustomEvent<GithubProfileDto>("github-login", {
         detail: r,
+        bubbles: true,
       });
 
       window.opener.dispatchEvent(ev);

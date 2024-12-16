@@ -6,6 +6,7 @@ export async function GET(req: NextRequest) {
   const clientSecret = process.env.NEXT_PUBLIC_GITHUB_CLIENT_SECRET;
   const params = req.nextUrl.searchParams;
   const code = params.get("code");
+  if (!code) return sendApiError(400, "확인 코드가 확실치 않아요!");
 
   const tokenRes = await fetch(
     `https://github.com/login/oauth/access_token?client_id=${clientId}&client_secret=${clientSecret}&code=${code}`,
@@ -23,7 +24,7 @@ export async function GET(req: NextRequest) {
 
   const githubProfileRes = await fetch(`https://api.github.com/user`, {
     headers: {
-      Authorization: `Bearer ${token.access_token}`,
+      Authorization: `Token ${token.access_token}`,
       accept: "application/json",
     },
   });
