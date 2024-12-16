@@ -1,4 +1,4 @@
-import Header from "../@header/page";
+import Header from "../_header/page";
 
 export default function GroupLayout({
   children,
