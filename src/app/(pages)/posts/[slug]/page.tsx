@@ -17,20 +17,23 @@ export async function generateMetadata({
 }: {
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
-  const slug = (await params).slug;
+  const { slug } = await params;
+  const postId = Number(slug);
 
-  const post = await prisma.post.findUniqueOrThrow({
+  const post = await prisma.post.findUnique({
     where: {
-      id: parseInt(slug),
+      id: postId,
     },
   });
+
+  if (!post) return {};
 
   return {
     title: post.title,
     icons: "/favicon.ico",
     openGraph: {
       title: post.title,
-      url: `${process.env.WEB_URL}/posts/${slug}`,
+      url: `${process.env.WEB_URL}/posts/${postId}`,
       siteName: "놋치미나의 아늑한 집",
       type: "article",
       authors: post.userId,
@@ -46,13 +49,15 @@ export default async function Post({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const postUrl = await prisma.post.findUnique({
-    where: { id: parseInt(slug) },
+  const postId = Number(slug);
+
+  const { postUrl } = await prisma.post.findUniqueOrThrow({
+    where: { id: postId },
     select: { postUrl: true },
   });
   if (!postUrl) return <NotFound />;
 
-  const res = await fetch(postUrl.postUrl);
+  const res = await fetch(postUrl);
   const markdown = await res.text();
   const { content, frontmatter } = await compileMDX<FrontmatterDto>({
     source: markdown,
@@ -77,14 +82,13 @@ export default async function Post({
       userId: frontmatter.userId,
     },
   });
-
   if (!user) return <NotFound />;
 
   const nextPost = await prisma.post.findMany({
     take: 1,
     skip: 1,
     cursor: {
-      id: parseInt(slug),
+      id: postId,
     },
     orderBy: {
       id: "asc",
@@ -95,7 +99,7 @@ export default async function Post({
     take: 1,
     skip: 1,
     cursor: {
-      id: parseInt(slug),
+      id: postId,
     },
     orderBy: {
       id: "desc",

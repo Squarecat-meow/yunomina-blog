@@ -22,9 +22,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
-  header,
 }: Readonly<{
-  header: React.ReactNode;
   children: React.ReactNode;
 }>) {
   return (
@@ -43,7 +41,6 @@ export default function RootLayout({
       <body
         className={`${Pretendard.variable} ${IBMMono.variable} font-[family-name:var(--font-pretendard-variable)] antialiased flex flex-col items-center p-2 desktop:p-6`}
       >
-        {header}
         <Suspense fallback={<Loading />}>{children}</Suspense>
       </body>
     </html>
