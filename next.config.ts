@@ -1,5 +1,5 @@
 import type { NextConfig } from "next";
-import createMDX from "@next/mdx";
+import nextMDX from "@next/mdx";
 
 const nextConfig: NextConfig = {
   pageExtensions: ["js", "jsx", "md", "mdx", "ts", "tsx"],
@@ -23,11 +23,10 @@ const nextConfig: NextConfig = {
     serverActions: {
       bodySizeLimit: "5mb",
     },
+    mdxRs: true,
   },
 };
 
-const withMDX = createMDX({
-  // 추가적인 마크다운 플러그인 설정 가능
-});
+const withMDX = nextMDX();
 
 export default withMDX(nextConfig);

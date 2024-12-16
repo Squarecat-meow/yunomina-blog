@@ -1,9 +1,6 @@
 "use client";
 
-import {
-  ProfileWithAvatarDto,
-  ProfileWithoutAvatarDto,
-} from "@/app/_dto/profile.dto";
+import { ProfileDto } from "@/app/_dto/profile.dto";
 import { Camera } from "@carbon/icons-react";
 import Image from "next/image";
 import {
@@ -17,15 +14,22 @@ import {
 import { useForm } from "react-hook-form";
 
 type FormValue = {
-  profile: ProfileWithoutAvatarDto;
+  profile: ProfileDto;
   avatar: string | null;
   setAvatar: Dispatch<SetStateAction<string | null>>;
   setLoading: Dispatch<SetStateAction<boolean>>;
+  setAddress: Dispatch<SetStateAction<string | null>>;
   refs: [
     fileInputRef: RefObject<HTMLInputElement>,
     avatarCropModal: RefObject<HTMLDialogElement>,
-    profileUpdateCompleteModalRef: RefObject<HTMLDialogElement>
+    profileUpdateCompleteModalRef: RefObject<HTMLDialogElement>,
+    emojiImportModalRef: RefObject<HTMLDialogElement>
   ];
+  address: string | null;
+};
+
+type BlogSettingFormValue = {
+  MisskeyAddress: string | null;
 };
 
 function destructFormValue<T>(t: T) {
@@ -38,18 +42,36 @@ function destructFormValue<T>(t: T) {
   return newObject;
 }
 
-export default function SettingForm({
+export default function ProfileSettingForm({
   profile,
   avatar,
   setAvatar,
   setLoading,
-  refs: [fileInputRef, avatarCropModal, profileUpdateCompleteModalRef],
+  setAddress,
+  refs: [
+    fileInputRef,
+    avatarCropModal,
+    profileUpdateCompleteModalRef,
+    emojiImportModalRef,
+  ],
+  address,
 }: FormValue) {
-  const { register, handleSubmit, reset } = useForm<ProfileWithoutAvatarDto>({
+  const { register, handleSubmit, reset } = useForm<ProfileDto>({
     mode: "onBlur",
     defaultValues: useMemo(() => {
       return profile;
     }, [profile]),
+  });
+
+  const {
+    register: blogRegister,
+    handleSubmit: blogHandleSubmit,
+    reset: blogReset,
+  } = useForm<BlogSettingFormValue>({
+    mode: "onBlur",
+    defaultValues: useMemo(() => {
+      return { MisskeyAddress: address };
+    }, [address]),
   });
 
   const handleInputClick = () => {
@@ -71,76 +93,47 @@ export default function SettingForm({
     avatarCropModal.current.showModal();
   };
 
-  const onSubmit = async (data: ProfileWithoutAvatarDto) => {
+  const onSubmit = async (data: ProfileDto) => {
     setLoading(true);
     profileUpdateCompleteModalRef.current?.showModal();
     const formData = new FormData();
+    let blob: Blob | null = null;
     try {
       if (profile) {
         if (avatar) {
           // 아바타 사진을 블롭으로 바꿈
-          const blob = await fetch(avatar).then((r) => r.blob());
-          // 멀티파트 폼 데이터로 변환
-          const newData = destructFormValue(data);
-          formData.append("avatar", blob);
-          formData.append("userId", profile?.userId);
-          for (const k in newData) {
-            formData.append(k, newData[k]);
-          }
-          const res = await fetch("/api/web/setting", {
-            method: "POST",
-            body: formData,
-          });
-          if (!res.ok) {
-            throw new Error(`저장하는데 실패했어요! ${await res.text()}`);
-          }
-
-          const result = await res.json();
-          const updatedProfileWithAvatar: ProfileWithAvatarDto = {
-            ...data,
-            avatarUrl: result.avatarUrl,
-          };
-          localStorage.setItem(
-            "profile",
-            JSON.stringify(updatedProfileWithAvatar)
-          );
-          window.dispatchEvent(
-            new CustomEvent("profile", {
-              bubbles: true,
-            })
-          );
-          setLoading(false);
-        } else {
-          // 멀티파트 폼 데이터로 변환
-          const newData = destructFormValue(data);
-          formData.append("avatar", "");
-          formData.append("userId", profile?.userId);
-          for (const k in newData) {
-            formData.append(k, newData[k]);
-          }
-          const res = await fetch("/api/web/setting", {
-            method: "POST",
-            body: formData,
-          });
-          if (!res.ok) {
-            throw new Error(`저장하는데 실패했어요! ${await res.text()}`);
-          }
-          const updatedProfileWithoutAvatar: ProfileWithAvatarDto = {
-            ...data,
-            avatarUrl: null,
-          };
-
-          localStorage.setItem(
-            "profile",
-            JSON.stringify(updatedProfileWithoutAvatar)
-          );
-          window.dispatchEvent(
-            new CustomEvent("profile", {
-              bubbles: true,
-            })
-          );
-          setLoading(false);
+          blob = await fetch(avatar).then((r) => r.blob());
         }
+        // 멀티파트 폼 데이터로 변환
+        const newData = destructFormValue(data);
+        formData.append("avatar", blob ?? "");
+        formData.append("userId", profile?.userId);
+        for (const k in newData) {
+          formData.append(k, newData[k]);
+        }
+        const res = await fetch("/api/web/setting", {
+          method: "POST",
+          body: formData,
+        });
+        if (!res.ok) {
+          throw new Error(`저장하는데 실패했어요! ${await res.text()}`);
+        }
+
+        const result = await res.json();
+        const updatedProfileWithAvatar: ProfileDto = {
+          ...data,
+          avatarUrl: result.avatarUrl ?? null,
+        };
+        localStorage.setItem(
+          "profile",
+          JSON.stringify(updatedProfileWithAvatar)
+        );
+        window.dispatchEvent(
+          new CustomEvent("profile", {
+            bubbles: true,
+          })
+        );
+        setLoading(false);
       } else {
         throw new Error("LocalStorage에 프로필이 없어요!");
       }
@@ -151,11 +144,18 @@ export default function SettingForm({
       alert(err);
     }
   };
+
+  const addressOnSubmit = (data: BlogSettingFormValue) => {
+    setAddress(data.MisskeyAddress);
+    emojiImportModalRef.current?.showModal();
+  };
+
   useEffect(() => {
     reset(profile);
-  }, [profile]);
+    blogReset({ MisskeyAddress: address });
+  }, [profile, address]);
   return (
-    <div className="w-full grid grid-cols-1 desktop:grid-cols-3 gap-4">
+    <div className="w-full grid grid-cols-1 desktop:grid-cols-3">
       <div className="flex flex-col items-center gap-4 desktop:border-r">
         <span className="text-2xl font-bold">아바타 설정</span>
         <div className="w-48 h-48 flex justify-center items-center rounded-full border border-dashed border-slate-400">
@@ -198,7 +198,8 @@ export default function SettingForm({
           아바타 초기화
         </button>
       </div>
-      <div className="flex justify-center">
+      <div className="flex flex-col items-center gap-4 desktop:border-r">
+        <span className="text-2xl font-bold">프로필 설정</span>
         <form
           onSubmit={handleSubmit(onSubmit)}
           className="w-full desktop:w-[24rem] flex flex-col gap-2"
@@ -239,6 +240,32 @@ export default function SettingForm({
             </button>
           </div>
         </form>
+      </div>
+      <div className="flex justify-center">
+        <div className="flex flex-col items-center gap-4 w-full desktop:w-[24rem]">
+          <span className="text-2xl font-bold">블로그 설정</span>
+          <form onSubmit={blogHandleSubmit(addressOnSubmit)}>
+            <div className="border-b border-b-black">
+              <label className="input flex items-center gap-2">
+                <span className="font-bold w-full">서버 주소</span>
+                <input
+                  {...blogRegister("MisskeyAddress")}
+                  type="text"
+                  className="w-48 desktop:w-72"
+                />
+              </label>
+            </div>
+            <div className="w-full flex justify-end mt-2">
+              <button
+                type="submit"
+                className="btn btn-outline btn-lg"
+                onClick={() => emojiImportModalRef.current?.showModal()}
+              >
+                저장
+              </button>
+            </div>
+          </form>
+        </div>
       </div>
     </div>
   );

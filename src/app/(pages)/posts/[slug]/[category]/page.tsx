@@ -1,6 +1,7 @@
 import { GetPrismaClient } from "@/utils/getPrismaClient/getPrismaClient";
 import PostComponent from "../../_postComponent";
 import { category, post, profile } from "@prisma/client";
+import { cookies } from "next/headers";
 
 const prisma = GetPrismaClient.getClient();
 
@@ -10,6 +11,7 @@ export default async function CategoryPage({
   params: Promise<{ category: string }>;
 }) {
   const { category } = await params;
+  const jwtToken = (await cookies()).get("jwtToken");
 
   let posts: ({ category: category; author: profile } & post)[] = [];
 
@@ -48,12 +50,22 @@ export default async function CategoryPage({
   }
 
   return (
-    <div className="desktop:grid desktop:grid-cols-2 p-2">
-      {posts.map((post) => (
-        <div key={post.id}>
-          <PostComponent posts={post} />
+    <div className="grid desktop:grid-cols-2">
+      {posts.length <= 0 ? (
+        <div className="w-full flex justify-center">
+          <h2 className="text-2xl font-semibold">글이 없어요!</h2>
         </div>
-      ))}
+      ) : (
+        <>
+          {posts.map((post) => (
+            <PostComponent
+              isLoggedIn={jwtToken ? true : false}
+              posts={post}
+              key={post.id}
+            />
+          ))}
+        </>
+      )}
     </div>
   );
 }

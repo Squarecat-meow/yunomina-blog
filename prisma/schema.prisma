@@ -14,6 +14,15 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model emojis {
+  id        Int     @id @default(autoincrement())
+  aliases   String[]
+  name      String
+  category  String?
+  url       String
+  isSensitive Boolean?
+}
+
 model user {
   id        Int     @id @default(autoincrement())
   userId    String  @unique
@@ -28,6 +37,7 @@ model profile {
   avatarUrl    String?
   sentences    String?
   introduce    String?
+  misskeyHandle String?
   ownedCategory category[]
   user         user    @relation(fields: [userId], references: [userId])
   post         post[]
@@ -43,6 +53,20 @@ model post {
   author       profile @relation(fields: [userId], references: [userId])
   category     category @relation(fields: [categoryId], references: [id])
   categoryId   Int
+  reply         reply[]
+}
+
+model reply {
+  id            Int       @id @default(autoincrement())
+  avatar        String?
+  name          String
+  postId        Int
+  githubId      Int       
+  post          post      @relation(fields: [postId], references: [id])
+  text          String
+  replyId       Int?
+  reply         reply?    @relation("rereply", fields: [replyId], references: [id])
+  rereply       reply[]   @relation("rereply")
 }
 
 model category {

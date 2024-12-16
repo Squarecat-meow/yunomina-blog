@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "reply" ALTER COLUMN "text" DROP NOT NULL,
+ALTER COLUMN "name" DROP NOT NULL;

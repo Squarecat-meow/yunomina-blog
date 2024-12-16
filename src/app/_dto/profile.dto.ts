@@ -6,14 +6,11 @@ export interface FormDataDto {
   introduce: string | null;
 }
 
-export interface ProfileWithoutAvatarDto {
+export interface ProfileDto {
   id: number;
   userId: string;
   nickname: string | null;
   sentences: string | null;
   introduce: string | null;
-}
-
-export interface ProfileWithAvatarDto extends ProfileWithoutAvatarDto {
-  avatarUrl: string | null;
+  avatarUrl?: string | null;
 }

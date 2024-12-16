@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
-import Header from "./@header/page";
 import { Suspense } from "react";
 import Loading from "./loading";
 
@@ -28,13 +27,21 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        <script
+          defer
+          data-domain="yuno.mina.house"
+          src="https://plausible.mina.house/js/script.js"
+        ></script>
+        <meta
+          name="google-site-verification"
+          content="mXr9xeLPH7srkDxe75OTKBpCxubthM1JdLTuGVoqWf0"
+        />
+      </head>
       <body
         className={`${Pretendard.variable} ${IBMMono.variable} font-[family-name:var(--font-pretendard-variable)] antialiased flex flex-col items-center p-2 desktop:p-6`}
       >
-        <Suspense fallback={<Loading />}>
-          <Header />
-          {children}
-        </Suspense>
+        <Suspense fallback={<Loading />}>{children}</Suspense>
       </body>
     </html>
   );

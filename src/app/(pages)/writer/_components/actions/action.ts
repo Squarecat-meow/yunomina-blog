@@ -36,3 +36,9 @@ export async function createCategory(category: string, owner: number) {
 
   return createdCategory;
 }
+
+export async function fetchEmojiArray() {
+  const emojiArray = await prisma.emojis.findMany();
+
+  return emojiArray;
+}

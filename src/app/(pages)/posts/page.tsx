@@ -1,5 +1,6 @@
 import { GetPrismaClient } from "@/utils/getPrismaClient/getPrismaClient";
 import PostComponent from "./_postComponent";
+import { cookies } from "next/headers";
 
 export const dynamic = "force-dynamic";
 
@@ -10,12 +11,18 @@ export default async function Posts() {
     orderBy: { id: "desc" },
   });
 
+  const jwtToken = (await cookies()).get("jwtToken");
+
   return (
-    <div className="desktop:grid desktop:grid-cols-2 p-2">
+    <div className="grid desktop:grid-cols-2">
       {posts.length !== 0 ? (
         <>
           {posts.map((post) => (
-            <PostComponent posts={post} key={post.id} />
+            <PostComponent
+              posts={post}
+              key={post.id}
+              isLoggedIn={jwtToken ? true : false}
+            />
           ))}
         </>
       ) : (

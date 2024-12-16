@@ -24,6 +24,7 @@ import {
   Code,
   Quotes,
   Image,
+  FaceSatisfied,
 } from "@carbon/icons-react";
 import { BsTypeH1, BsTypeH2, BsTypeH3 } from "react-icons/bs";
 import EditorDivider from "./components/divider";
@@ -71,6 +72,7 @@ import { blockTypeToBlockName } from "./utils/toolbarUtils";
 import EditorCodeDropdown from "./components/codeDropdown";
 import { EditorContext } from "@/app/_context/contextProvider";
 import { InsertImageDialog } from "./plugins/imagePlugin";
+import EmojiSelector from "./components/emojiSelector";
 
 export type DropdownType = {
   key: string;
@@ -122,6 +124,7 @@ export default function ToolbarPlugin({
   const [codeLanguage, setCodeLanguage] = useState<string>("");
   const [isLink, setIsLink] = useState(false);
   const [isEditable, setIsEditable] = useState(() => editor.isEditable());
+  const [misskeyAddress, setMisskeyAddress] = useState<string | null>(null);
 
   const ImageDialogModalRef = useRef<HTMLDialogElement>(null);
 
@@ -324,7 +327,7 @@ export default function ToolbarPlugin({
   }, [editor, activeEditor, $updateToolbar]);
 
   return (
-    <div className="h-18 desktop:h-12 flex flex-col desktop:flex-row desktop:items-center p-2 border-b border-base-300">
+    <div className="h-[5rem] desktop:h-12 flex flex-col desktop:flex-row desktop:items-center p-2 border-b border-base-300">
       <div className="flex items-center">
         <EditorButton
           disabled={!canUndo || !isEditable}
@@ -401,6 +404,14 @@ export default function ToolbarPlugin({
               />
               <Image size={20} />
             </EditorButton>
+            <details className="dropdown">
+              <summary tabIndex={0} role="button" className="list-none">
+                <EditorButton>
+                  <FaceSatisfied size={20} />
+                </EditorButton>
+              </summary>
+              <EmojiSelector />
+            </details>
           </>
         )}
       </div>

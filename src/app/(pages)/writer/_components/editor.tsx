@@ -15,6 +15,9 @@ import {
   MarkdownShortcutPlugin,
 } from "@lexical/react/LexicalMarkdownShortcutPlugin";
 import ImagePlugin from "./plugins/imagePlugin";
+import { AutoLinkPlugin } from "@lexical/react/LexicalAutoLinkPlugin";
+import { MATCHERS } from "./utils/autoLinkMatchers";
+import EmojiPickerPlugin from "./plugins/emojiPickerPlugin";
 
 export default function Editor() {
   const [editor] = useLexicalComposerContext();
@@ -30,9 +33,7 @@ export default function Editor() {
       <div className="p-4">
         <RichTextPlugin
           contentEditable={
-            <div>
-              <ContentEditable className="min-h-[calc(100vh-242px-48px)] focus:outline-none" />
-            </div>
+            <ContentEditable className="min-h-[calc(100vh-242px-48px)] focus:outline-none" />
           }
           ErrorBoundary={LexicalErrorBoundary}
         />
@@ -42,6 +43,8 @@ export default function Editor() {
         <CodeHighlightPlugin />
         <ImagePlugin />
         <MarkdownShortcutPlugin transformers={DEFAULT_TRANSFORMERS} />
+        <AutoLinkPlugin matchers={MATCHERS} />
+        <EmojiPickerPlugin />
       </div>
     </div>
   );
