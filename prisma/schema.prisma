@@ -60,7 +60,8 @@ model reply {
   id            Int       @id @default(autoincrement())
   avatar        String?
   name          String
-  postId        Int       
+  postId        Int
+  githubId      Int       
   post          post      @relation(fields: [postId], references: [id])
   text          String
   replyId       Int?

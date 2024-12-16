@@ -16,19 +16,37 @@ import { MATCHERS } from "@/app/(pages)/writer/_components/utils/autoLinkMatcher
 import EmojiPickerPlugin, {
   KEOMOJI,
 } from "@/app/(pages)/writer/_components/plugins/emojiPickerPlugin";
-import { useCallback, useEffect, useRef, useState } from "react";
+import {
+  Dispatch,
+  RefObject,
+  SetStateAction,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 import { $convertToMarkdownString, TRANSFORMERS } from "@lexical/markdown";
 import { GithubProfileDto } from "@/app/_dto/replyGithubProfile.dto";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { $getRoot } from "lexical";
 
-export default function Editor({ enable }: { enable: boolean }) {
+export default function Editor({
+  enable,
+  setIsReady,
+  modalRef,
+}: {
+  enable: boolean;
+  setIsReady: Dispatch<SetStateAction<boolean>>;
+  modalRef: RefObject<HTMLDialogElement>;
+}) {
   const [editor] = useLexicalComposerContext();
   const markdown = useRef<string | null>(null);
+  const router = useRouter();
   const pathname = usePathname();
   const postId = pathname.match(/(?<=posts\/).+/)?.[0];
 
-  const onEv = useCallback(async () => {
+  const onReplyEv = useCallback(async () => {
     editor.update(() => {
       markdown.current = $convertToMarkdownString([KEOMOJI, ...TRANSFORMERS]);
     });
@@ -40,13 +58,19 @@ export default function Editor({ enable }: { enable: boolean }) {
     }
     if (markdown.current === "") {
       alert("댓글이 비어있어요!");
+      return;
+    }
+    if (!postId) {
+      alert("포스트가 없어요!");
+      return;
     }
     const parsedProfile = JSON.parse(profile) as GithubProfileDto;
     const payload = {
-      postId: postId,
+      postId: parseInt(postId),
       avatar: parsedProfile.avatar_url,
       name: parsedProfile.name,
       reply: markdown.current,
+      githubId: parsedProfile.id,
     };
 
     const res = await fetch(`/api/web/post/reply`, {
@@ -57,21 +81,30 @@ export default function Editor({ enable }: { enable: boolean }) {
       },
       body: JSON.stringify(payload),
     });
-    if (!res.ok) alert("댓글을 다는데 실패했어요!");
-    console.log(res.json());
+    if (!res.ok) {
+      alert(`댓글을 다는데 실패했어요!, ${await res.text()}`);
+      return;
+    }
+    editor.update(() => {
+      const root = $getRoot();
+      root.clear();
+    });
+    modalRef.current?.showModal();
+    setIsReady(true);
   }, [editor]);
 
   useEffect(() => {
     editor.setEditable(enable);
+    router.refresh();
   }, [enable, editor]);
 
   useEffect(() => {
-    window.addEventListener("reply", onEv as EventListener);
+    window.addEventListener("reply", onReplyEv as EventListener);
 
     return () => {
-      window.removeEventListener("reply", onEv as EventListener);
+      window.removeEventListener("reply", onReplyEv as EventListener);
     };
-  }, [onEv]);
+  }, []);
   return (
     <div className="relative flex-grow">
       <RichTextPlugin
