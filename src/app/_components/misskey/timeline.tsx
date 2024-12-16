@@ -1,3 +1,5 @@
+"use client";
+
 import { MiNoteDto } from "@/app/_dto/MiNote.dto";
 import { useCallback, useEffect, useState } from "react";
 import MiNote from "./note";

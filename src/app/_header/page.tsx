@@ -57,7 +57,7 @@ export default function Header() {
           drawer.checked = false;
         });
       });
-      document.removeEventListener("avatar", () => {
+      window.removeEventListener("profile", () => {
         const localProfile = localStorage.getItem("profile");
         if (localProfile) {
           setProfile(null);

@@ -2,9 +2,9 @@
 
 import { GetPrismaClient } from "@/utils/getPrismaClient/getPrismaClient";
 
-export default async function getCategories() {
-  const prisma = GetPrismaClient.getClient();
+const prisma = GetPrismaClient.getClient();
 
+export default async function getCategories() {
   const categories = await prisma.profile.findMany({
     include: {
       ownedCategory: true,
