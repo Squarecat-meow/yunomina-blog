@@ -22,8 +22,6 @@ export async function POST(req: NextRequest) {
 
     const payload = await req.json();
 
-    console.log(payload);
-
     if (!payload) return sendApiError(400, "댓글 정보가 확실치 않아요!");
 
     const replyResult = await prisma.reply.create({

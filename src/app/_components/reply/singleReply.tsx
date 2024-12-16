@@ -46,10 +46,10 @@ export default function SingleReply({
           </div>
         </div>
         <div className="chat-footer flex gap-2">
-          <CarbonReply />
           {github?.id === reply.githubId && (
             <TrashCan
               fill="red"
+              className="cursor-pointer"
               onClick={() => replyDeleteConfirmModalRef.current?.showModal()}
             />
           )}

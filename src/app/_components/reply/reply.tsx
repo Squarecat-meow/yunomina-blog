@@ -5,7 +5,7 @@ import Editor from "./editor";
 import { LexicalComposer } from "@lexical/react/LexicalComposer";
 import { initialConfig } from "@/app/(pages)/writer/_initialConfig";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { GithubProfileDto } from "@/app/_dto/replyGithubProfile.dto";
 import { reply } from "@prisma/client";
 import remarkGfm from "remark-gfm";
@@ -23,7 +23,6 @@ export default function Reply() {
   const [isReady, setIsReady] = useState<boolean>(false);
   const replySuccessModalRef = useRef<HTMLDialogElement>(null);
   const clientId = process.env.NEXT_PUBLIC_GITHUB_CLIENT_ID;
-  const url = process.env.NEXT_PUBLIC_WEB_URL;
   const pathname = usePathname();
   const postId = pathname.match(/(?<=posts\/).+/)?.[0];
 
@@ -51,7 +50,7 @@ export default function Reply() {
       })
     );
     return { compileMarkdown, parsedReplyes };
-  }, []);
+  }, [postId]);
 
   const initialize = useCallback(async () => {
     const githubSessionLogin = sessionStorage.getItem("githubLogin");
@@ -68,7 +67,7 @@ export default function Reply() {
 
     setCompiledReply(compileMarkdown);
     setReply(parsedReplyes);
-  }, []);
+  }, [fetchReply]);
 
   const onReplyEv = useCallback(() => {
     fetchReply().then(({ compileMarkdown, parsedReplyes }) => {
@@ -76,7 +75,7 @@ export default function Reply() {
       setReply(parsedReplyes);
       setIsReady(false);
     });
-  }, []);
+  }, [fetchReply]);
 
   useEffect(() => {
     onReplyEv();
@@ -94,7 +93,7 @@ export default function Reply() {
       window.removeEventListener("replyDelete", onReplyEv as EventListener);
       window.removeEventListener("github-login", onLoginEv as EventListener);
     };
-  }, [url, initialize, onLoginEv, isLoggedIn]);
+  }, [initialize, onLoginEv, onReplyEv, isLoggedIn]);
 
   return (
     <div className="space-y-2">

@@ -3,6 +3,7 @@
 import { useCallback, useEffect } from "react";
 import { GithubProfileDto } from "../_dto/replyGithubProfile.dto";
 import { useSearchParams } from "next/navigation";
+import Loading from "../loading";
 
 export default function GithubCallback() {
   const searchParams = useSearchParams();
@@ -27,5 +28,5 @@ export default function GithubCallback() {
     });
   }, [fn]);
 
-  return <div>히히</div>;
+  return <Loading />;
 }
