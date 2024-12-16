@@ -1,5 +1,3 @@
-"use client";
-
 import MisskeyTimeline from "@/app/_components/misskey/timeline";
 
 export default function Home() {
