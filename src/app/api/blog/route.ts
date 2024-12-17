@@ -4,11 +4,11 @@ export async function GET() {
       "@context": "https://www.w3.org/ns/activitystreams",
       id: `${process.env.WEB_URL}/blog`,
       type: "Person",
-      following: "https://serafuku.moe/@Yozumina/following",
-      followers: "https://serafuku.moe/@Yozumina/followers",
+      following: `${process.env.WEB_URL}/following`,
+      followers: `${process.env.WEB_URL}/followers`,
       inbox: `${process.env.WEB_URL}/api/inbox`,
       outbox: `${process.env.WEB_URL}/api/outbox`,
-      preferredUsername: "yunominaBlog",
+      preferredUsername: "blog",
       name: "놋치미나의 아늑한 집",
       summary: "놋치미나의 공동블로그에요!",
       url: `${process.env.WEB_URL}`,
@@ -31,6 +31,14 @@ export async function GET() {
         owner: `${process.env.WEB_URL}/blog`,
         publicKeyPem: process.env.PUBLIC_KEY,
       },
+      attachment: [
+        {
+          type: "PropertyValue",
+          name: "블로그",
+          value:
+            '<a href="https://yuno.mina.house" target="_blank" rel="nofollow noopener noreferrer me" translate="no"><span class="invisible">https://</span><span class="">yuno.mina.house</span><span class="invisible"></span></a>',
+        },
+      ],
     },
     { headers: { "Content-Type": "application/activity+json" } }
   );

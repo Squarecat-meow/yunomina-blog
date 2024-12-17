@@ -2,7 +2,7 @@ export async function GET() {
   return Response.json(
     {
       subject: "acct:blog@yuno.mina.house",
-      aliases: [`${process.env.WEB_URL}/blog`],
+      aliases: ["https://serafuku.moe/@Yozumina"],
       links: [
         {
           rel: "self",
