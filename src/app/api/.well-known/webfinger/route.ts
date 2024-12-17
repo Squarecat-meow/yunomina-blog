@@ -1,12 +1,8 @@
-0;
 export async function GET() {
   return Response.json(
     {
       subject: "acct:blog@yuno.mina.house",
-      aliases: [
-        `${process.env.WEB_URL}/@blog`,
-        `${process.env.WEB_URL}/users/@blog`,
-      ],
+      aliases: [`${process.env.WEB_URL}/blog`],
       links: [
         {
           rel: "self",
