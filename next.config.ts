@@ -2,6 +2,22 @@ import type { NextConfig } from "next";
 import nextMDX from "@next/mdx";
 
 const nextConfig: NextConfig = {
+  async rewrites() {
+    return [
+      {
+        source: "/.well-known/:path*",
+        destination: "/api/.well-known/:path*",
+      },
+      {
+        source: "/nodeinfo/:path*",
+        destination: "/api/nodeinfo/:path*",
+      },
+      {
+        source: "/blog",
+        destination: "/api/blog",
+      },
+    ];
+  },
   pageExtensions: ["js", "jsx", "md", "mdx", "ts", "tsx"],
   transpilePackages: ["next-mdx-remote"],
   images: {
