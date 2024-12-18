@@ -2,12 +2,12 @@ export async function GET() {
   return Response.json(
     {
       "@context": "https://www.w3.org/ns/activitystreams",
-      id: `${process.env.WEB_URL}/blog`,
+      id: `${process.env.WEB_URL}/users/blog`,
       type: "Person",
-      following: `${process.env.WEB_URL}/following`,
-      followers: `${process.env.WEB_URL}/followers`,
-      inbox: `${process.env.WEB_URL}/api/inbox`,
-      outbox: `${process.env.WEB_URL}/api/outbox`,
+      following: `${process.env.WEB_URL}/users/blog/following`,
+      followers: `${process.env.WEB_URL}/users/blog/followers`,
+      inbox: `${process.env.WEB_URL}/users/blog/inbox`,
+      outbox: `${process.env.WEB_URL}/users/blog/outbox`,
       preferredUsername: "blog",
       name: "놋치미나의 아늑한 집",
       summary: "놋치미나의 공동블로그에요!",
@@ -27,8 +27,8 @@ export async function GET() {
       publicKey: {
         "@context": "https://w3id.org/security/v1",
         "@type": "Key",
-        id: `${process.env.WEB_URL}/blog#main-key`,
-        owner: `${process.env.WEB_URL}/blog`,
+        id: `${process.env.WEB_URL}/users/blog#main-key`,
+        owner: `${process.env.WEB_URL}/users/blog`,
         publicKeyPem: process.env.PUBLIC_KEY,
       },
       attachment: [
