@@ -45,7 +45,8 @@ export async function POST(req: NextRequest) {
   if (!signatureObject)
     return sendApiError(400, "HTTP 시그니쳐가 맞지 않아요!");
 
-  const actorInformation = await fetchActorInformation(signatureObject.keyId);
+  const keyId = signatureObject.keyId.match(/^[^#]*/g)?.[0];
+  const actorInformation = await fetchActorInformation(keyId ?? "");
   if (!actorInformation || !actorInformation.publicKey)
     return sendApiError(401, "액터 정보를 가져올 수 없어요!");
   const keyBuffer = Buffer.from(signatureObject.signature);
