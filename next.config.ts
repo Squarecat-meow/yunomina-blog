@@ -13,8 +13,8 @@ const nextConfig: NextConfig = {
         destination: "/api/nodeinfo/:path*",
       },
       {
-        source: "/blog",
-        destination: "/api/blog",
+        source: "/users/blog/:path*",
+        destination: "/api/users/blog/:path*",
       },
     ];
   },
