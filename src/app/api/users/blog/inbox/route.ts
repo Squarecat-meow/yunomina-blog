@@ -1,8 +1,14 @@
 import { sendApiError } from "@/utils/apiHandler/sendApiError";
 import { NextRequest, NextResponse } from "next/server";
 import { AP } from "activitypub-core-types";
-import { parse, ParseResponse, verifySignature } from "http-signature";
+import {
+  parse,
+  ParseResponse,
+  verifyHMAC,
+  verifySignature,
+} from "http-signature";
 import { ClientRequest } from "http";
+import { createHash, createVerify, hash, publicDecrypt } from "crypto";
 
 async function fetchActorInformation(
   actorUrl: string
@@ -21,6 +27,19 @@ async function fetchActorInformation(
     console.log("Unable to fetch actor information", actorUrl);
   }
   return null;
+}
+
+function hashAndVerify(signature: ParseResponse, actor: AP.Actor) {
+  const hashedSignature = createHash(signature.params.algorithm)
+    .update(signature.params.signature)
+    .digest("hex");
+  const decryptedSignature = publicDecrypt(
+    actor.publicKey!.publicKeyPem,
+    Buffer.from(signature.params.signature, "base64")
+  ).toString("hex");
+
+  if (hashedSignature === decryptedSignature) return true;
+  else return false;
 }
 
 export async function POST(req: NextRequest) {
@@ -44,12 +63,13 @@ export async function POST(req: NextRequest) {
   if (!actorInformation || !actorInformation.publicKey)
     return sendApiError(401, "액터 정보를 가져올 수 없어요!");
 
-  console.log(signature, actorInformation.publicKey.publicKeyPem);
+  const isVerified = hashAndVerify(signature, actorInformation);
 
-  const isVerified = verifySignature(
-    signature,
-    actorInformation.publicKey.publicKeyPem
-  );
+  // const verifier = createVerify("RSA-SHA256");
+  // const isVerified = verifier.verify(
+  //   actorInformation.publicKey.publicKeyPem,
+  //   signature.params.signature
+  // );
 
   if (isVerified === false) {
     console.log("검증에 실패했어요! ", isVerified);
