@@ -1,11 +1,7 @@
-import { NextResponse } from "next/server";
-import { parseRequest } from "http-signature";
-import { ClientRequest } from "http";
+import { NextRequest, NextResponse } from "next/server";
 
-export async function POST(req: ClientRequest) {
-  const signature = parseRequest(req);
-
-  console.log(req, signature);
+export async function POST(req: NextRequest) {
+  console.log(req);
 
   return NextResponse.json({});
 }
