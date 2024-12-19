@@ -38,6 +38,9 @@ function hashAndVerify(signature: ParseResponse, actor: AP.Actor) {
     Buffer.from(signature.params.signature, "base64")
   ).toString("hex");
 
+  console.log("hashed Signature: ", hashedSignature);
+  console.log("decrypted Signature: ", decryptedSignature);
+
   if (hashedSignature === decryptedSignature) return true;
   else return false;
 }
