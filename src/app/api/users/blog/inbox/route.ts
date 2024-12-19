@@ -38,7 +38,7 @@ function parseSignature(signature: string) {
 
 export async function POST(req: NextRequest) {
   const data = await req.json();
-  const dataBuffer = Buffer.from(data);
+  const dataBuffer = Buffer.from(JSON.stringify(data));
   const signature = req.headers.get("signature");
   if (!signature) return sendApiError(401, "HTTP 시그니쳐가 없어요!");
   const signatureObject = parseSignature(signature);
