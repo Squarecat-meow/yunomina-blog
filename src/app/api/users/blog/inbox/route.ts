@@ -23,22 +23,6 @@ async function fetchActorInformation(
   return null;
 }
 
-function verify(signature: ParseResponse, publicKeyJson: AP.Actor) {
-  let signatureValid;
-
-  try {
-    // Verify the signature
-    signatureValid = verifySignature(
-      signature,
-      publicKeyJson.publicKey!.publicKeyPem
-    );
-  } catch (error) {
-    console.log("Signature Verification error", error);
-  }
-
-  return signatureValid;
-}
-
 export async function POST(req: NextRequest) {
   const a = new Map<string, string>([]);
   const h = req.headers.entries();
@@ -56,16 +40,18 @@ export async function POST(req: NextRequest) {
 
   const signature = parse(newHeader);
   if (!signature) return sendApiError(401, "HTTP 시그니쳐가 없어요!");
-  // const signatureObject = parseSignature(signature);
-  // if (!signatureObject)
-  //   return sendApiError(400, "HTTP 시그니쳐가 맞지 않아요!");
-
   const actorInformation = await fetchActorInformation(signature.params.keyId);
   if (!actorInformation || !actorInformation.publicKey)
     return sendApiError(401, "액터 정보를 가져올 수 없어요!");
-  const isVerified = verify(signature, actorInformation);
 
-  if (isVerified === false || typeof isVerified !== "boolean") {
+  console.log(signature, actorInformation.publicKey.publicKeyPem);
+
+  const isVerified = verifySignature(
+    signature,
+    actorInformation.publicKey.publicKeyPem
+  );
+
+  if (isVerified === false) {
     console.log("검증에 실패했어요! ", isVerified);
     return sendApiError(405, "검증에 실패했어요!");
   }
@@ -73,4 +59,14 @@ export async function POST(req: NextRequest) {
   console.log(isVerified);
 
   return NextResponse.json("성공!");
+}
+
+export async function GET(req: NextRequest) {
+  return NextResponse.json({
+    "@context": "https://www.w3.org/ns/activitystreams",
+    summary: "놋치미나 블로그의 Inbox",
+    type: "OrderedCollection",
+    totalItems: 0,
+    orderedItems: [],
+  });
 }
