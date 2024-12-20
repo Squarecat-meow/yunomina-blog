@@ -1,6 +1,9 @@
 # syntax=docker.io/docker/dockerfile:1
 
-FROM node:22-bookworm AS base
+FROM node:22-alpine AS base
+
+RUN ln -s /usr/lib/libssl.so.3 /lib/libssl.so.3
+RUN apk add --no-cache libc6-compat
 
 FROM base AS deps
 WORKDIR /app
