@@ -86,19 +86,22 @@ export async function POST(req: NextRequest) {
 
   //const isVerified = hashAndVerify(signature, actorInformation, he.signature);
 
-  const isVerified = verifySignature(
-    signature,
-    actorInformation.publicKey.publicKeyPem
-  );
+  // const isVerified = verifySignature(
+  //   signature,
+  //   actorInformation.publicKey.publicKeyPem
+  // );
 
   console.log(signature);
   console.log(actorInformation.publicKey.publicKeyPem);
 
-  // const verifier = createVerify(signature.params.algorithm);
-  // const isVerified = verifier.verify(
-  //   actorInformation.publicKey.publicKeyPem,
-  //   Buffer.from(signature.signingString, "base64")
-  // );
+  const verifier = createVerify(signature.params.algorithm)
+    .update(signature.signingString)
+    .end();
+  const isVerified = verifier.verify(
+    actorInformation.publicKey.publicKeyPem,
+    signature.signingString,
+    "base64"
+  );
 
   if (isVerified === false) {
     console.log("검증에 실패했어요! ", isVerified);
