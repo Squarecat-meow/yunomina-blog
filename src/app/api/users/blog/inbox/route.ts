@@ -3,7 +3,15 @@ import { NextRequest, NextResponse } from "next/server";
 import { AP } from "activitypub-core-types";
 import { parseRequest, ParseResponse, verifySignature } from "http-signature";
 import { ClientRequest } from "http";
-import { createHash, createVerify, publicDecrypt } from "crypto";
+import {
+  constants,
+  createHash,
+  createPublicKey,
+  createSign,
+  createVerify,
+  publicDecrypt,
+  verify,
+} from "crypto";
 
 async function fetchActorInformation(
   actorUrl: string
@@ -24,20 +32,42 @@ async function fetchActorInformation(
   return null;
 }
 
-function hashAndVerify(signature: ParseResponse, actor: AP.Actor) {
-  const hashedSignature = createHash(signature.params.algorithm)
-    .update(signature.signingString)
-    .digest("hex");
-  const decryptedSignature = publicDecrypt(
+function hashAndVerify(
+  signature: ParseResponse,
+  actor: AP.Actor,
+  headerSignature: string
+) {
+  const decryptedHash = publicDecrypt(
     actor.publicKey!.publicKeyPem,
     Buffer.from(signature.params.signature, "base64")
-  ).toString("hex");
+  ).toString("base64");
 
-  console.log("hashed Signature: ", hashedSignature);
-  console.log("decrypted Signature: ", decryptedSignature);
+  const valueFromlapo = `30 31 30 0D 06 09 60 86  48 01 65 03 04 02 01 05
+00 04 20 95 E0 B4 D8 F2  40 73 0A 99 5E F7 27 98
+7A FE 63 E8 79 62 86 FC  57 55 59 6F 71 FA 66 FB
+5B F7 02 `.replaceAll(/\s/g, "");
 
-  if (hashedSignature === decryptedSignature) return true;
-  else return false;
+  const decryptedSignature = Buffer.from(valueFromlapo, "hex").toString(
+    "base64"
+  );
+
+  const verifier = createVerify("sha256");
+  verifier.write(signature.signingString);
+  verifier.end();
+
+  console.log(
+    verifier.verify(
+      actor.publicKey!.publicKeyPem,
+      signature.params.signature,
+      "base64"
+    )
+  );
+
+  // console.log("hashed Signature: ", hashedSignature);
+  // console.log("decrypted Signature: ", decryptedSignature);
+
+  // if (hashedSignature === decryptedSignature) return true;
+  // else return false;
 }
 
 export async function POST(req: NextRequest) {
@@ -61,12 +91,12 @@ export async function POST(req: NextRequest) {
   if (!actorInformation || !actorInformation.publicKey)
     return sendApiError(401, "액터 정보를 가져올 수 없어요!");
 
-  const isVerified = hashAndVerify(signature, actorInformation);
+  // const isVerified = hashAndVerify(signature, actorInformation, he.signature);
 
-  // const isVerified = verifySignature(
-  //   signature,
-  //   actorInformation.publicKey.publicKeyPem
-  // );
+  const isVerified = verifySignature(
+    signature,
+    actorInformation.publicKey.publicKeyPem
+  );
 
   // const verifier = createVerify(signature.params.algorithm);
   // const isVerified = verifier.verify(
