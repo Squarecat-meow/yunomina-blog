@@ -66,7 +66,7 @@ export async function POST(req: NextRequest) {
   if (!actorInformation || !actorInformation.publicKey)
     return sendApiError(401, "액터 정보를 가져올 수 없어요!");
 
-  const isVerified = hashAndVerify(signature, actorInformation);
+  // const isVerified = hashAndVerify(signature, actorInformation);
 
   // const verifier = createVerify("RSA-SHA256");
   // const isVerified = verifier.verify(
@@ -74,9 +74,17 @@ export async function POST(req: NextRequest) {
   //   signature.params.signature
   // );
 
+  const isVerified = verifySignature(
+    signature,
+    actorInformation.publicKey.publicKeyPem
+  );
+
+  console.log(signature);
+  console.log(actorInformation.publicKey.publicKeyPem);
+
   if (isVerified === false) {
     console.log("검증에 실패했어요! ", isVerified);
-    return sendApiError(405, "검증에 실패했어요!");
+    return sendApiError(401, "검증에 실패했어요!");
   }
 
   console.log(isVerified);
