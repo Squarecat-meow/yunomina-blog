@@ -1,14 +1,9 @@
 import { sendApiError } from "@/utils/apiHandler/sendApiError";
 import { NextRequest, NextResponse } from "next/server";
 import { AP } from "activitypub-core-types";
-import {
-  parse,
-  ParseResponse,
-  verifyHMAC,
-  verifySignature,
-} from "http-signature";
+import { parseRequest, ParseResponse, verifySignature } from "http-signature";
 import { ClientRequest } from "http";
-import { createHash, createVerify, hash, publicDecrypt } from "crypto";
+import { createHash, createVerify, publicDecrypt } from "crypto";
 
 async function fetchActorInformation(
   actorUrl: string
@@ -31,7 +26,7 @@ async function fetchActorInformation(
 
 function hashAndVerify(signature: ParseResponse, actor: AP.Actor) {
   const hashedSignature = createHash(signature.params.algorithm)
-    .update(signature.params.signature)
+    .update(signature.signingString)
     .digest("hex");
   const decryptedSignature = publicDecrypt(
     actor.publicKey!.publicKeyPem,
@@ -58,29 +53,26 @@ export async function POST(req: NextRequest) {
   Object.assign(newHeader, { headers: he });
   Object.assign(newHeader, { method: req.method });
   Object.assign(newHeader, { url: req.url });
-  Object.assign(newHeader, { httpVersion: "HTTP/2.0" });
+  Object.assign(newHeader, { httpVersion: "HTTP/1.1" });
 
-  const signature = parse(newHeader);
+  const signature = parseRequest(newHeader);
   if (!signature) return sendApiError(401, "HTTP 시그니쳐가 없어요!");
   const actorInformation = await fetchActorInformation(signature.params.keyId);
   if (!actorInformation || !actorInformation.publicKey)
     return sendApiError(401, "액터 정보를 가져올 수 없어요!");
 
-  // const isVerified = hashAndVerify(signature, actorInformation);
+  const isVerified = hashAndVerify(signature, actorInformation);
 
-  // const verifier = createVerify("RSA-SHA256");
-  // const isVerified = verifier.verify(
-  //   actorInformation.publicKey.publicKeyPem,
-  //   signature.params.signature
+  // const isVerified = verifySignature(
+  //   signature,
+  //   actorInformation.publicKey.publicKeyPem
   // );
 
-  const isVerified = verifySignature(
-    signature,
-    actorInformation.publicKey.publicKeyPem
-  );
-
-  console.log(signature);
-  console.log(actorInformation.publicKey.publicKeyPem);
+  // const verifier = createVerify(signature.params.algorithm);
+  // const isVerified = verifier.verify(
+  //   actorInformation.publicKey.publicKeyPem,
+  //   Buffer.from(signature.signingString, "base64")
+  // );
 
   if (isVerified === false) {
     console.log("검증에 실패했어요! ", isVerified);
