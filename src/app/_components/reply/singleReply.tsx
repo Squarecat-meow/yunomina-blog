@@ -41,7 +41,7 @@ export default function SingleReply({
         </div>
         <div>
           <div className="chat-header">{reply.name}</div>
-          <div className="chat-bubble flex items-center bg-base-100 text-slate-800 shadow prose">
+          <div className="chat-bubble flex items-center bg-base-100 text-slate-800 dark:text-slate-300 shadow prose">
             {compiledReply[replyKey].content}
           </div>
         </div>

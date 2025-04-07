@@ -1,19 +1,20 @@
 # syntax=docker.io/docker/dockerfile:1
 
-FROM node:22-bookworm AS base
+FROM node:22-alpine3.20 AS base
 
 FROM base AS deps
 WORKDIR /app
 
 # 디펜던시 설치
 COPY package.json package-lock.json* ./
-RUN npm ci
+RUN npm install
 
 # 소스코드 빌드하는 곳
 FROM base AS builder
 WORKDIR /app
 COPY . .
 
+RUN npm install prisma
 RUN npx prisma generate
 RUN npm run build
 

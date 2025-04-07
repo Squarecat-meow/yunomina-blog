@@ -43,13 +43,10 @@ export default function PostComponent({
       <Link href={`/posts/${posts.id}`} key={posts.id} className="h-full">
         {posts.thumbnail && (
           <figure>
-            <Image
+            <img
               src={posts.thumbnail}
               alt="post thumbnail"
-              width={384}
-              height={192}
-              objectFit="cover"
-              className="rounded-t-box"
+              className="w-[24rem] h-[12rem] rounded-t-box object-cover"
             />
           </figure>
         )}

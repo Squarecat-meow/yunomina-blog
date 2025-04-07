@@ -3,8 +3,8 @@
 import DialogModalLoadingOneButton from "@/app/_components/modalLoadingOneButton";
 import DialogModalTwoButton from "@/app/_components/modalTwoButton";
 import { ChangeEvent, useCallback, useEffect, useRef, useState } from "react";
-import { $convertToMarkdownString, TRANSFORMERS } from "@lexical/markdown";
-import { LexicalEditor } from "lexical";
+import { $convertToMarkdownString, TextMatchTransformer, TRANSFORMERS } from "@lexical/markdown";
+import { $isTextNode, LexicalEditor, LexicalNode } from "lexical";
 import Editor from "./_components/editor";
 import { useForm } from "react-hook-form";
 import { PostDto } from "@/app/_dto/post.dto";
@@ -20,6 +20,7 @@ import { category, profile } from "@prisma/client";
 import { useRouter } from "next/navigation";
 import { EditorContext } from "@/app/_context/contextProvider";
 import { KEOMOJI } from "./_components/plugins/emojiPickerPlugin";
+import { ANGLE_BRAKET } from "./_components/plugins/angleBraketPlugin";
 
 type postType = {
   title: string;
@@ -62,6 +63,7 @@ export default function Writer() {
           markdown = $convertToMarkdownString([
             KEOMOJI,
             IMAGE,
+            ANGLE_BRAKET,
             ...TRANSFORMERS,
           ]);
         });
@@ -256,9 +258,8 @@ export default function Writer() {
                     autoComplete="off"
                     type="text"
                     {...register("title", { required: true })}
-                    className={`w-full ${
-                      errors.title && "input-bordered input-error"
-                    }`}
+                    className={`w-full ${errors.title && "input-bordered input-error"
+                      }`}
                   />
                 </label>
                 <button

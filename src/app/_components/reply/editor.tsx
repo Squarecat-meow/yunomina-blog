@@ -30,6 +30,7 @@ import { $convertToMarkdownString, TRANSFORMERS } from "@lexical/markdown";
 import { GithubProfileDto } from "@/app/_dto/replyGithubProfile.dto";
 import { usePathname, useRouter } from "next/navigation";
 import { $getRoot } from "lexical";
+import { ANGLE_BRAKET } from "@/app/(pages)/writer/_components/plugins/angleBraketPlugin";
 
 export default function Editor({
   enable,
@@ -48,7 +49,7 @@ export default function Editor({
 
   const onReplyEv = useCallback(async () => {
     editor.update(() => {
-      markdown.current = $convertToMarkdownString([KEOMOJI, ...TRANSFORMERS]);
+      markdown.current = $convertToMarkdownString([KEOMOJI, ANGLE_BRAKET, ...TRANSFORMERS]);
     });
 
     const profile = sessionStorage.getItem("githubLogin");
@@ -112,9 +113,8 @@ export default function Editor({
           <div className="rounded-box border border-base-300 p-2">
             <ContentEditable
               disabled={enable}
-              className={`focus:outline-none ${
-                !enable && "cursor-not-allowed"
-              }`}
+              className={`focus:outline-none ${!enable && "cursor-not-allowed"
+                }`}
               aria-placeholder={
                 enable
                   ? "댓글을 입력해 주세요..."
